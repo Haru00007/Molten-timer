@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -829,4 +830,768 @@
     </script>
 </body>
 
+=======
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Timer Controller</title>
+    <style>
+        @font-face {
+            font-family: 'DSEG7 Classic';
+            src: url('./fonts/DSEG7Classic-Bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'LED Calculator';
+            src: url('./fonts/LEDCalculator.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #ccc;
+        }
+
+        h1 {
+            font-family: 'LED Calculator', sans-serif;
+            color: #0d0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .monitor {
+            background-color: #000;
+            border: 2px solid #333;
+            border-radius: 4px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            font-family: 'LED Calculator', sans-serif;
+            font-size: 28px;
+            line-height: 1.8;
+            color: #0d0;
+            min-width: 450px;
+        }
+
+        .monitor-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mon-slot {
+            display: inline-block;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .monitor .period-display {
+            color: orange;
+        }
+
+        .monitor .timer-display {
+            color: #fff;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .monitor .score-display {
+            color: orange;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .monitor .shot-clock-display {
+            color: #d00;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .monitor .arrow {
+            color: #222;
+        }
+
+        .monitor .arrow.active {
+            color: #d00;
+        }
+
+        .controls-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-section {
+            background-color: #222;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+        }
+
+        .section-title {
+            font-family: 'LED Calculator', sans-serif;
+            color: #0d0;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #ccc;
+            font-family: 'LED Calculator', sans-serif;
+            font-size: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.1s;
+            min-width: 60px;
+        }
+
+        .control-btn:hover {
+            background-color: #444;
+            border-color: #777;
+            color: #fff;
+        }
+
+        .control-btn:active {
+            background-color: #555;
+            transform: translateY(1px);
+        }
+
+        .control-btn.toggled {
+            background-color: #300;
+            border-color: #d00;
+            color: #d00;
+        }
+
+        .control-btn.active-green {
+            background-color: #030;
+            border-color: #0d0;
+            color: #0d0;
+        }
+
+        .control-btn.wide {
+            min-width: 100px;
+        }
+
+        .control-btn.full-width {
+            width: 100%;
+        }
+
+        .control-btn.hold-active {
+            background-color: #111;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>F01 Basketball Timer</h1>
+
+    <div class="monitor">
+        <div class="monitor-row">
+            <span id="mon-period" class="period-display mon-slot">1</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-arrow-left" class="arrow">&lt;</span>
+            <span class="mon-slot">H</span>
+            <span id="mon-timer" class="timer-display">10:00</span>
+            <span class="mon-slot">G</span>
+            <span id="mon-arrow-right" class="arrow">&gt;</span>
+        </div>
+        <div class="monitor-row">
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-score-home" class="score-display">0</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-shot-clock" class="shot-clock-display">24</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-score-guest" class="score-display">0</span>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <div class="control-section">
+            <div class="section-title">Sub-Timer</div>
+            <div class="button-row">
+                <button id="sub-clear" class="control-btn">Clear</button>
+                <button id="sub-toggle-time" class="control-btn">24/30</button>
+            </div>
+            <div class="button-row">
+                <button id="sub-plus-1s" class="control-btn">+1s</button>
+                <button id="sub-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="sub-14s-start" class="control-btn wide">14s Start</button>
+            </div>
+            <div class="button-row">
+                <button id="sub-reset" class="control-btn">Reset</button>
+                <button id="sub-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Timer</div>
+            <div class="button-row">
+                <button id="timer-clear" class="control-btn">Clear</button>
+                <button id="timer-count-mode" class="control-btn">Up/Down</button>
+                <button id="timer-show-tenths" class="control-btn">1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="timer-plus-1m" class="control-btn">+1m</button>
+                <button id="timer-minus-1m" class="control-btn">-1m</button>
+                <button id="timer-plus-1s" class="control-btn">+1s</button>
+                <button id="timer-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="timer-plus-tenth" class="control-btn">+1/10s</button>
+                <button id="timer-minus-tenth" class="control-btn">-1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="timer-reset" class="control-btn">Reset</button>
+                <button id="timer-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Score</div>
+            <div class="button-row">
+                <button id="score-hg-toggle" class="control-btn">H/G</button>
+                <button id="score-court-change" class="control-btn">Court</button>
+            </div>
+            <div class="button-row">
+                <button id="score-arrow-left" class="control-btn">&lt;</button>
+                <button id="score-period" class="control-btn">P</button>
+                <button id="score-arrow-right" class="control-btn">&gt;</button>
+            </div>
+            <div class="button-row">
+                <button id="score-left-plus" class="control-btn">L+1</button>
+                <button id="score-right-plus" class="control-btn">R+1</button>
+            </div>
+            <div class="button-row">
+                <button id="score-left-minus" class="control-btn">L-1</button>
+                <button id="score-right-minus" class="control-btn">R-1</button>
+            </div>
+            <div class="button-row">
+                <button id="score-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase設定
+        const firebaseConfig = {
+            databaseURL: "https://molten-timer-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const stateRef = database.ref('timer-state');
+        let state = {
+            timerMinutes: 10,
+            timerSeconds: 0,
+            timerTenths: 0,
+            timerRunning: false,
+            timerCountUp: false,
+            showTenths: false,
+            timerPresetSeconds: 10 * 60,
+
+            shotClock: 24,
+            shotClockTenths: 0,
+            shotClockRunning: false,
+            shotClockBlank: false,
+            shotClockPreset: 24,
+
+            scoreHome: 0,
+            scoreGuest: 0,
+            scoreHomeBlank: false,
+            scoreGuestBlank: false,
+
+            period: null,
+
+            arrowLeft: false,
+            arrowRight: false,
+
+            courtFlipped: false,
+            hgState: 0, // 0=H/G, 1=G/H, 2=off
+
+            // Program mode
+            programMode: false,
+            programNumber: 1,
+            programs: [] // Array of period times in seconds
+        };
+
+        let timerInterval = null;
+        let shotClockInterval = null;
+
+        const monPeriod = document.getElementById('mon-period');
+        const monTimer = document.getElementById('mon-timer');
+        const monShotClock = document.getElementById('mon-shot-clock');
+        const monScoreHome = document.getElementById('mon-score-home');
+        const monScoreGuest = document.getElementById('mon-score-guest');
+        const monArrowLeft = document.getElementById('mon-arrow-left');
+        const monArrowRight = document.getElementById('mon-arrow-right');
+
+        const channel = new BroadcastChannel('basketball-timer');
+
+        function broadcastState() {
+            // BroadcastChannel（同一デバイス内用）
+            channel.postMessage(state);
+            // Firebase（クロスデバイス用）
+            stateRef.set(state);
+        }
+
+        function updateMonitor() {
+            monPeriod.textContent = state.period === null ? ' ' : state.period;
+
+            const mins = state.timerMinutes;
+            const secs = state.timerSeconds;
+            if (state.showTenths && mins === 0 && secs < 60) {
+                const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
+                monTimer.textContent = `${secsStr}.${state.timerTenths}`;
+            } else {
+                const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                monTimer.textContent = `${mStr}:${sStr}`;
+            }
+
+            if (state.shotClockBlank) {
+                monShotClock.textContent = '';
+            } else if (state.shotClock < 10) {
+                monShotClock.textContent = `${state.shotClock}.${state.shotClockTenths}`;
+            } else {
+                monShotClock.textContent = `${state.shotClock}`;
+            }
+
+            if (state.programMode) {
+                monScoreHome.textContent = '';
+                monScoreGuest.textContent = `P${String(state.programNumber).padStart(2, '0')}`;
+            } else {
+                const leftScore = state.courtFlipped ? state.scoreGuest : state.scoreHome;
+                const rightScore = state.courtFlipped ? state.scoreHome : state.scoreGuest;
+                const leftBlank = state.courtFlipped ? state.scoreGuestBlank : state.scoreHomeBlank;
+                const rightBlank = state.courtFlipped ? state.scoreHomeBlank : state.scoreGuestBlank;
+                monScoreHome.textContent = leftBlank ? '' : leftScore;
+                monScoreGuest.textContent = rightBlank ? '' : rightScore;
+            }
+
+            monArrowLeft.classList.toggle('active', state.arrowLeft);
+            monArrowRight.classList.toggle('active', state.arrowRight);
+
+            broadcastState();
+        }
+
+        function timerTick() {
+            if (state.timerCountUp) {
+                state.timerTenths++;
+                if (state.timerTenths >= 10) {
+                    state.timerTenths = 0;
+                    state.timerSeconds++;
+                    if (state.timerSeconds >= 60) {
+                        state.timerSeconds = 0;
+                        state.timerMinutes++;
+                    }
+                }
+                const totalSecs = state.timerMinutes * 60 + state.timerSeconds;
+                if (totalSecs >= state.timerPresetSeconds) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    state.timerRunning = false;
+                    document.getElementById('timer-start-stop').classList.remove('toggled');
+                }
+            } else {
+                if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    state.timerRunning = false;
+                    document.getElementById('timer-start-stop').classList.remove('toggled');
+                } else {
+                    state.timerTenths--;
+                    if (state.timerTenths < 0) {
+                        state.timerTenths = 9;
+                        state.timerSeconds--;
+                        if (state.timerSeconds < 0) {
+                            state.timerSeconds = 59;
+                            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+                        }
+                    }
+                }
+            }
+            updateMonitor();
+        }
+
+        function shotClockTick() {
+            state.shotClockTenths--;
+            if (state.shotClockTenths < 0) {
+                state.shotClockTenths = 9;
+                state.shotClock--;
+            }
+            if (state.shotClock < 0) {
+                state.shotClock = 0;
+                state.shotClockTenths = 0;
+                clearInterval(shotClockInterval);
+                shotClockInterval = null;
+                state.shotClockRunning = false;
+                document.getElementById('sub-start-stop').classList.remove('toggled');
+            }
+            updateMonitor();
+        }
+
+        // Sub-Timer buttons
+        document.getElementById('sub-clear').addEventListener('click', () => {
+            state.shotClock = 0;
+            state.shotClockTenths = 0;
+            state.shotClockBlank = false;
+            updateMonitor();
+        });
+
+        document.getElementById('sub-toggle-time').addEventListener('click', () => {
+            state.shotClockPreset = state.shotClockPreset === 24 ? 30 : 24;
+            document.getElementById('sub-toggle-time').textContent = `${state.shotClockPreset}/${state.shotClockPreset === 24 ? 30 : 24}`;
+            updateMonitor();
+        });
+
+        document.getElementById('sub-plus-1s').addEventListener('click', () => {
+            state.shotClockBlank = false;
+            state.shotClock = Math.min(99, state.shotClock + 1);
+            updateMonitor();
+        });
+
+        document.getElementById('sub-minus-1s').addEventListener('click', () => {
+            if (state.shotClock === 0 && state.shotClockTenths === 0) {
+                state.shotClockBlank = true;
+            } else {
+                state.shotClock = Math.max(0, state.shotClock - 1);
+            }
+            updateMonitor();
+        });
+
+        const sub14sBtn = document.getElementById('sub-14s-start');
+        sub14sBtn.addEventListener('mousedown', () => {
+            state.shotClockBlank = true;
+            sub14sBtn.classList.add('hold-active');
+            updateMonitor();
+        });
+        sub14sBtn.addEventListener('mouseup', () => {
+            state.shotClockBlank = false;
+            state.shotClock = 14;
+            state.shotClockTenths = 0;
+            sub14sBtn.classList.remove('hold-active');
+            if (!state.shotClockRunning) {
+                state.shotClockRunning = true;
+                shotClockInterval = setInterval(shotClockTick, 100);
+                document.getElementById('sub-start-stop').classList.add('toggled');
+            }
+            updateMonitor();
+        });
+        sub14sBtn.addEventListener('mouseleave', () => {
+            if (state.shotClockBlank) {
+                state.shotClockBlank = false;
+                state.shotClock = 14;
+                state.shotClockTenths = 0;
+                updateMonitor();
+            }
+            sub14sBtn.classList.remove('hold-active');
+        });
+
+        const subResetBtn = document.getElementById('sub-reset');
+        subResetBtn.addEventListener('mousedown', () => {
+            state.shotClockBlank = true;
+            subResetBtn.classList.add('hold-active');
+            updateMonitor();
+        });
+        subResetBtn.addEventListener('mouseup', () => {
+            state.shotClockBlank = false;
+            state.shotClock = state.shotClockPreset;
+            state.shotClockTenths = 0;
+            subResetBtn.classList.remove('hold-active');
+            if (!state.shotClockRunning) {
+                state.shotClockRunning = true;
+                shotClockInterval = setInterval(shotClockTick, 100);
+                document.getElementById('sub-start-stop').classList.add('toggled');
+            }
+            updateMonitor();
+        });
+        subResetBtn.addEventListener('mouseleave', () => {
+            if (state.shotClockBlank) {
+                state.shotClockBlank = false;
+                state.shotClock = state.shotClockPreset;
+                state.shotClockTenths = 0;
+                updateMonitor();
+            }
+            subResetBtn.classList.remove('hold-active');
+        });
+
+        document.getElementById('sub-start-stop').addEventListener('click', () => {
+            if (state.shotClockRunning) {
+                clearInterval(shotClockInterval);
+                shotClockInterval = null;
+                state.shotClockRunning = false;
+            } else {
+                state.shotClockRunning = true;
+                shotClockInterval = setInterval(shotClockTick, 100);
+            }
+            document.getElementById('sub-start-stop').classList.toggle('toggled', state.shotClockRunning);
+            updateMonitor();
+        });
+
+        // Timer buttons
+        document.getElementById('timer-clear').addEventListener('click', () => {
+            state.timerMinutes = 0;
+            state.timerSeconds = 0;
+            state.timerTenths = 0;
+            updateMonitor();
+        });
+
+        document.getElementById('timer-count-mode').addEventListener('click', () => {
+            state.timerCountUp = !state.timerCountUp;
+            const btn = document.getElementById('timer-count-mode');
+            btn.classList.toggle('toggled', state.timerCountUp);
+            btn.textContent = state.timerCountUp ? 'Up' : 'Down';
+            if (state.timerCountUp) {
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('timer-show-tenths').addEventListener('click', () => {
+            state.showTenths = !state.showTenths;
+            document.getElementById('timer-show-tenths').classList.toggle('toggled', state.showTenths);
+            updateMonitor();
+        });
+
+        document.getElementById('timer-plus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('timer-minus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('timer-plus-1s').addEventListener('click', () => {
+            state.timerSeconds++;
+            if (state.timerSeconds >= 60) { state.timerSeconds = 0; state.timerMinutes = Math.min(99, state.timerMinutes + 1); }
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('timer-minus-1s').addEventListener('click', () => {
+            state.timerSeconds--;
+            if (state.timerSeconds < 0) { state.timerSeconds = 59; state.timerMinutes = Math.max(0, state.timerMinutes - 1); }
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('timer-plus-tenth').addEventListener('click', () => {
+            state.timerTenths++;
+            if (state.timerTenths >= 10) { state.timerTenths = 0; state.timerSeconds++; if (state.timerSeconds >= 60) { state.timerSeconds = 0; state.timerMinutes++; } }
+            updateMonitor();
+        });
+
+        document.getElementById('timer-minus-tenth').addEventListener('click', () => {
+            state.timerTenths--;
+            if (state.timerTenths < 0) { state.timerTenths = 9; state.timerSeconds--; if (state.timerSeconds < 0) { state.timerSeconds = 59; state.timerMinutes--; } }
+            updateMonitor();
+        });
+
+        // Timer Reset - handles program mode
+        document.getElementById('timer-reset').addEventListener('click', () => {
+            const currentTimeSeconds = state.timerMinutes * 60 + state.timerSeconds;
+
+            if (!state.programMode) {
+                // Not in program mode
+                if (currentTimeSeconds > 0) {
+                    // Time is set - enter program mode
+                    state.programs = [currentTimeSeconds];
+                    state.programMode = true;
+                    state.programNumber = 2;
+                    state.timerMinutes = 0;
+                    state.timerSeconds = 0;
+                    state.timerTenths = 0;
+                } else {
+                    // Already 0, just reset
+                    state.timerMinutes = Math.floor(state.timerPresetSeconds / 60);
+                    state.timerSeconds = state.timerPresetSeconds % 60;
+                    state.timerTenths = 0;
+                }
+            } else {
+                // In program mode
+                if (currentTimeSeconds > 0) {
+                    // Add this time to programs
+                    state.programs.push(currentTimeSeconds);
+                    state.programNumber++;
+                    state.timerMinutes = 0;
+                    state.timerSeconds = 0;
+                    state.timerTenths = 0;
+                } else {
+                    // Timer is 0 - confirm and exit program mode
+                    state.programMode = false;
+                    // Set timer to first program
+                    if (state.programs.length > 0) {
+                        const firstProgram = state.programs[0];
+                        state.timerMinutes = Math.floor(firstProgram / 60);
+                        state.timerSeconds = firstProgram % 60;
+                        state.timerPresetSeconds = firstProgram;
+                    }
+                    state.programNumber = 1;
+                }
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('timer-start-stop').addEventListener('click', () => {
+            if (state.timerRunning) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                state.timerRunning = false;
+            } else {
+                state.timerRunning = true;
+                timerInterval = setInterval(timerTick, 100);
+            }
+            document.getElementById('timer-start-stop').classList.toggle('toggled', state.timerRunning);
+            updateMonitor();
+        });
+
+        // Score buttons
+        document.getElementById('score-hg-toggle').addEventListener('click', () => {
+            state.hgState = (state.hgState + 1) % 3;
+            const btn = document.getElementById('score-hg-toggle');
+            btn.classList.remove('toggled', 'active-green');
+            if (state.hgState === 0) btn.textContent = 'H/G';
+            else if (state.hgState === 1) { btn.textContent = 'G/H'; btn.classList.add('toggled'); }
+            else { btn.textContent = 'Off'; }
+            updateMonitor();
+        });
+
+        document.getElementById('score-court-change').addEventListener('click', () => {
+            state.courtFlipped = !state.courtFlipped;
+            [state.arrowLeft, state.arrowRight] = [state.arrowRight, state.arrowLeft];
+            // Also swap H/G if not off
+            if (state.hgState !== 2) {
+                state.hgState = state.hgState === 0 ? 1 : 0;
+                const btn = document.getElementById('score-hg-toggle');
+                if (state.hgState === 0) { btn.textContent = 'H/G'; btn.classList.remove('toggled'); }
+                else { btn.textContent = 'G/H'; btn.classList.add('toggled'); }
+            }
+            document.getElementById('score-court-change').classList.toggle('toggled', state.courtFlipped);
+            updateMonitor();
+        });
+
+        document.getElementById('score-arrow-left').addEventListener('click', () => {
+            if (state.arrowLeft) { state.arrowLeft = false; }
+            else { state.arrowLeft = true; state.arrowRight = false; }
+            document.getElementById('score-arrow-left').classList.toggle('toggled', state.arrowLeft);
+            document.getElementById('score-arrow-right').classList.toggle('toggled', state.arrowRight);
+            updateMonitor();
+        });
+
+        document.getElementById('score-arrow-right').addEventListener('click', () => {
+            if (state.arrowRight) { state.arrowRight = false; }
+            else { state.arrowRight = true; state.arrowLeft = false; }
+            document.getElementById('score-arrow-left').classList.toggle('toggled', state.arrowLeft);
+            document.getElementById('score-arrow-right').classList.toggle('toggled', state.arrowRight);
+            updateMonitor();
+        });
+
+        document.getElementById('score-period').addEventListener('click', () => {
+            const cycle = [null, 1, 2, 3, 4, 5, 'E'];
+            const idx = cycle.indexOf(state.period);
+            state.period = cycle[(idx + 1) % cycle.length];
+            updateMonitor();
+        });
+
+        document.getElementById('score-left-plus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.scoreGuestBlank = false;
+                state.scoreGuest = Math.min(199, state.scoreGuest + 1);
+            } else {
+                state.scoreHomeBlank = false;
+                state.scoreHome = Math.min(199, state.scoreHome + 1);
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('score-right-plus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.scoreHomeBlank = false;
+                state.scoreHome = Math.min(199, state.scoreHome + 1);
+            } else {
+                state.scoreGuestBlank = false;
+                state.scoreGuest = Math.min(199, state.scoreGuest + 1);
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('score-left-minus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                if (state.scoreGuest === 0) { state.scoreGuestBlank = true; }
+                else { state.scoreGuest = Math.max(0, state.scoreGuest - 1); }
+            } else {
+                if (state.scoreHome === 0) { state.scoreHomeBlank = true; }
+                else { state.scoreHome = Math.max(0, state.scoreHome - 1); }
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('score-right-minus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                if (state.scoreHome === 0) { state.scoreHomeBlank = true; }
+                else { state.scoreHome = Math.max(0, state.scoreHome - 1); }
+            } else {
+                if (state.scoreGuest === 0) { state.scoreGuestBlank = true; }
+                else { state.scoreGuest = Math.max(0, state.scoreGuest - 1); }
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('score-reset').addEventListener('click', () => {
+            state.scoreHome = 0;
+            state.scoreGuest = 0;
+            state.scoreHomeBlank = false;
+            state.scoreGuestBlank = false;
+            updateMonitor();
+        });
+
+        updateMonitor();
+    </script>
+</body>
+
+>>>>>>> 96e155a8fc7d3eaabd2202edcbc161685c83ceb6
 </html>
