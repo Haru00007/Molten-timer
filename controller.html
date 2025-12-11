@@ -352,15 +352,36 @@
 
         // Load buzzer sound
         fetch('./Sounds/buzzer.wav')
-            .then(response => response.arrayBuffer())
+            .then(response => {
+                if (!response.ok) throw new Error('Buzzer file not found');
+                return response.arrayBuffer();
+            })
             .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-            .then(buffer => { buzzerBuffer = buffer; })
+            .then(buffer => {
+                buzzerBuffer = buffer;
+                console.log('Buzzer loaded successfully');
+            })
             .catch(err => console.error('Failed to load buzzer:', err));
+
+        // Unlock AudioContext on first user interaction
+        document.addEventListener('click', function unlockAudio() {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log('AudioContext resumed');
+                });
+            }
+            document.removeEventListener('click', unlockAudio);
+        }, { once: true });
 
         // Play buzzer once (for sub-timer)
         function playBuzzer() {
-            if (!buzzerBuffer) return;
-            if (audioContext.state === 'suspended') audioContext.resume();
+            if (!buzzerBuffer) {
+                console.error('Buzzer not loaded');
+                return;
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
             const source = audioContext.createBufferSource();
             source.buffer = buzzerBuffer;
             source.connect(audioContext.destination);
@@ -369,8 +390,13 @@
 
         // Play buzzer twice seamlessly (for main timer - 2x length, same pitch)
         function playDoubleBuzzer() {
-            if (!buzzerBuffer) return;
-            if (audioContext.state === 'suspended') audioContext.resume();
+            if (!buzzerBuffer) {
+                console.error('Buzzer not loaded');
+                return;
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
             const source1 = audioContext.createBufferSource();
             const source2 = audioContext.createBufferSource();
             source1.buffer = buzzerBuffer;
