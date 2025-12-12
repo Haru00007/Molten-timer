@@ -206,6 +206,7 @@
         const stateRef = database.ref('timer-state');
 
         let state = {
+            functionMode: 'F01',
             timerMinutes: 10,
             timerSeconds: 0,
             timerTenths: 0,
@@ -225,7 +226,15 @@
             courtFlipped: false,
             hgState: 0,
             programMode: false,
-            programNumber: 1
+            programNumber: 1,
+            // F02 specific
+            gameSetsLeft: 0,
+            gameSetsRight: 0,
+            timeoutTimer: 30,
+            timeoutTimerTenths: 0,
+            timeoutTimerRunning: false,
+            timeoutTimerBlank: true,
+            timeoutTimerPreset: 30
         };
 
         const timerDisplayEl = document.getElementById('timer-display');
@@ -262,70 +271,110 @@
         };
 
         function updateDisplay() {
-            const mins = state.timerMinutes;
-            const secs = state.timerSeconds;
+            if (state.functionMode === 'F02') {
+                // F02 Mode: Volleyball, Badminton, Table Tennis
+                // Top row: Serve indicator + Score (2 digits each)
+                const leftScore = state.courtFlipped ? state.scoreGuest : state.scoreHome;
+                const rightScore = state.courtFlipped ? state.scoreHome : state.scoreGuest;
+                const leftStr = leftScore < 10 ? `!${leftScore}` : `${leftScore}`;
+                const rightStr = rightScore < 10 ? `!${rightScore}` : `${rightScore}`;
+                timerDisplayEl.textContent = `${leftStr} ${rightStr}`;
+                timerDisplayEl.classList.remove('left-align');
 
-            const isTenthsMode = state.showTenths && mins === 0 && secs < 60;
-            timerDisplayEl.classList.toggle('left-align', isTenthsMode);
+                arrowLeftEl.classList.toggle('active', state.arrowLeft);
+                arrowRightEl.classList.toggle('active', state.arrowRight);
 
-            if (isTenthsMode) {
-                const secsStr = secs < 10 ? `!${secs}` : `${secs}`;
-                timerDisplayEl.textContent = `${secsStr}. ${state.timerTenths}`;
+                // Middle row: Only period dots (H/G labels hidden)
+                labelLeftEl.textContent = '';
+                labelRightEl.textContent = '';
+                labelLeftEl.classList.remove('active');
+                labelRightEl.classList.remove('active');
+
+                const periodMap = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 'E': 6 };
+                const activeDots = periodMap[state.period] || 0;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index < activeDots);
+                });
+
+                // Bottom row: Game Sets (left) / Timeout Timer (center) / Game Sets (right)
+                const gameSetsL = state.courtFlipped ? state.gameSetsRight : state.gameSetsLeft;
+                const gameSetsR = state.courtFlipped ? state.gameSetsLeft : state.gameSetsRight;
+                scoreHomeEl.textContent = gameSetsL;
+                scoreGuestEl.textContent = gameSetsR;
+
+                // Timeout Timer in center (replaces shot clock)
+                if (state.timeoutTimerBlank) {
+                    shotClockEl.textContent = '';
+                } else {
+                    shotClockEl.textContent = state.timeoutTimer;
+                }
             } else {
-                const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
-                const sStr = secs < 10 ? `0${secs}` : `${secs}`;
-                timerDisplayEl.textContent = `${mStr}:${sStr}`;
-            }
+                // F01 Mode: Basketball (original behavior)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
 
-            arrowLeftEl.classList.toggle('active', state.arrowLeft);
-            arrowRightEl.classList.toggle('active', state.arrowRight);
+                const isTenthsMode = state.showTenths && mins === 0 && secs < 60;
+                timerDisplayEl.classList.toggle('left-align', isTenthsMode);
 
-            let leftLabel = 'H';
-            let rightLabel = 'G';
-            let leftActive = true;
-            let rightActive = true;
+                if (isTenthsMode) {
+                    const secsStr = secs < 10 ? `!${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${secsStr}. ${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${mStr}:${sStr}`;
+                }
 
-            if (state.hgState === 2) {
-                leftActive = false;
-                rightActive = false;
-            } else if (state.hgState === 1) {
-                leftLabel = 'G';
-                rightLabel = 'H';
-            }
-            if (state.courtFlipped && state.hgState !== 2) {
-                [leftLabel, rightLabel] = [rightLabel, leftLabel];
-            }
+                arrowLeftEl.classList.toggle('active', state.arrowLeft);
+                arrowRightEl.classList.toggle('active', state.arrowRight);
 
-            labelLeftEl.textContent = leftLabel;
-            labelRightEl.textContent = rightLabel;
-            labelLeftEl.classList.toggle('active', leftActive);
-            labelRightEl.classList.toggle('active', rightActive);
+                let leftLabel = 'H';
+                let rightLabel = 'G';
+                let leftActive = true;
+                let rightActive = true;
 
-            const periodMap = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 'E': 6 };
-            const activeDots = periodMap[state.period] || 0;
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index < activeDots);
-            });
+                if (state.hgState === 2) {
+                    leftActive = false;
+                    rightActive = false;
+                } else if (state.hgState === 1) {
+                    leftLabel = 'G';
+                    rightLabel = 'H';
+                }
+                if (state.courtFlipped && state.hgState !== 2) {
+                    [leftLabel, rightLabel] = [rightLabel, leftLabel];
+                }
 
-            if (state.programMode) {
-                scoreHomeEl.textContent = '';
-                scoreGuestEl.textContent = `P${String(state.programNumber).padStart(2, '0')}`;
-            } else {
-                const homeScore = state.courtFlipped ? state.scoreGuest : state.scoreHome;
-                const guestScore = state.courtFlipped ? state.scoreHome : state.scoreGuest;
-                const homeBlank = state.courtFlipped ? state.scoreGuestBlank : state.scoreHomeBlank;
-                const guestBlank = state.courtFlipped ? state.scoreHomeBlank : state.scoreGuestBlank;
+                labelLeftEl.textContent = leftLabel;
+                labelRightEl.textContent = rightLabel;
+                labelLeftEl.classList.toggle('active', leftActive);
+                labelRightEl.classList.toggle('active', rightActive);
 
-                scoreHomeEl.textContent = homeBlank ? '' : homeScore;
-                scoreGuestEl.textContent = guestBlank ? '' : guestScore;
-            }
+                const periodMap = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 'E': 6 };
+                const activeDots = periodMap[state.period] || 0;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index < activeDots);
+                });
 
-            if (state.shotClockBlank) {
-                shotClockEl.textContent = '';
-            } else if (state.shotClock < 10) {
-                shotClockEl.textContent = `${state.shotClock}.${state.shotClockTenths}`;
-            } else {
-                shotClockEl.textContent = state.shotClock;
+                if (state.programMode) {
+                    scoreHomeEl.textContent = '';
+                    scoreGuestEl.textContent = `P${String(state.programNumber).padStart(2, '0')}`;
+                } else {
+                    const homeScore = state.courtFlipped ? state.scoreGuest : state.scoreHome;
+                    const guestScore = state.courtFlipped ? state.scoreHome : state.scoreGuest;
+                    const homeBlank = state.courtFlipped ? state.scoreGuestBlank : state.scoreHomeBlank;
+                    const guestBlank = state.courtFlipped ? state.scoreHomeBlank : state.scoreGuestBlank;
+
+                    scoreHomeEl.textContent = homeBlank ? '' : homeScore;
+                    scoreGuestEl.textContent = guestBlank ? '' : guestScore;
+                }
+
+                if (state.shotClockBlank) {
+                    shotClockEl.textContent = '';
+                } else if (state.shotClock < 10) {
+                    shotClockEl.textContent = `${state.shotClock}.${state.shotClockTenths}`;
+                } else {
+                    shotClockEl.textContent = state.shotClock;
+                }
             }
         }
 

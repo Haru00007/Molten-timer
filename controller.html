@@ -184,7 +184,8 @@
 <body>
     <h1>F01 Basketball Timer</h1>
 
-    <div class="monitor">
+    <!-- F01 Monitor -->
+    <div id="monitor-f01" class="monitor">
         <div class="monitor-row">
             <span id="mon-period" class="period-display mon-slot">1</span>
             <span class="mon-slot">&nbsp;</span>
@@ -204,7 +205,28 @@
         </div>
     </div>
 
-    <div class="controls-container">
+    <!-- F02 Monitor -->
+    <div id="monitor-f02" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span id="mon-f02-period" class="period-display mon-slot"> </span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f02-arrow-left" class="arrow">&lt;</span>
+            <span id="mon-f02-score-left" class="score-display">0</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f02-score-right" class="score-display">0</span>
+            <span id="mon-f02-arrow-right" class="arrow">&gt;</span>
+        </div>
+        <div class="monitor-row">
+            <span id="mon-f02-sets-left" class="score-display">0</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f02-timeout" class="shot-clock-display"></span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f02-sets-right" class="score-display">0</span>
+        </div>
+    </div>
+
+    <!-- F01 Controls -->
+    <div id="controls-f01" class="controls-container">
         <div class="control-section">
             <div class="section-title">Sub-Timer</div>
             <div class="button-row">
@@ -279,6 +301,63 @@
         </div>
     </div>
 
+    <!-- F02 Controls -->
+    <div id="controls-f02" class="controls-container" style="display: none;">
+        <div class="control-section">
+            <div class="section-title">Timeout Timer</div>
+            <div class="button-row">
+                <button id="f02-timeout-plus-1s" class="control-btn">+1s</button>
+                <button id="f02-timeout-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f02-timeout-reset" class="control-btn">Reset</button>
+                <button id="f02-timeout-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f02-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Score</div>
+            <div class="button-row">
+                <button id="f02-score-arrow-left" class="control-btn">&lt;</button>
+                <button id="f02-score-period" class="control-btn">P</button>
+                <button id="f02-score-arrow-right" class="control-btn">&gt;</button>
+            </div>
+            <div class="button-row">
+                <button id="f02-score-left-plus" class="control-btn">L+1</button>
+                <button id="f02-score-right-plus" class="control-btn">R+1</button>
+            </div>
+            <div class="button-row">
+                <button id="f02-score-left-minus" class="control-btn">L-1</button>
+                <button id="f02-score-right-minus" class="control-btn">R-1</button>
+            </div>
+            <div class="button-row">
+                <button id="f02-score-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Game Sets</div>
+            <div class="button-row">
+                <button id="f02-sets-left-plus" class="control-btn">L+1</button>
+                <button id="f02-sets-right-plus" class="control-btn">R+1</button>
+            </div>
+            <div class="button-row">
+                <button id="f02-sets-left-minus" class="control-btn">L-1</button>
+                <button id="f02-sets-right-minus" class="control-btn">R-1</button>
+            </div>
+            <div class="button-row">
+                <button id="f02-sets-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -310,6 +389,7 @@
         let currentFunctionIndex = 0;
 
         let state = {
+            functionMode: 'F01',
             timerMinutes: 10,
             timerSeconds: 0,
             timerTenths: 0,
@@ -340,7 +420,16 @@
             // Program mode
             programMode: false,
             programNumber: 1,
-            programs: [] // Array of period times in seconds
+            programs: [], // Array of period times in seconds
+
+            // F02 specific
+            gameSetsLeft: 0,
+            gameSetsRight: 0,
+            timeoutTimer: 30,
+            timeoutTimerTenths: 0,
+            timeoutTimerRunning: false,
+            timeoutTimerBlank: true,
+            timeoutTimerPreset: 30
         };
 
         let timerInterval = null;
@@ -415,6 +504,16 @@
         const monArrowLeft = document.getElementById('mon-arrow-left');
         const monArrowRight = document.getElementById('mon-arrow-right');
 
+        // F02 Monitor elements
+        const monF02Period = document.getElementById('mon-f02-period');
+        const monF02ScoreLeft = document.getElementById('mon-f02-score-left');
+        const monF02ScoreRight = document.getElementById('mon-f02-score-right');
+        const monF02ArrowLeft = document.getElementById('mon-f02-arrow-left');
+        const monF02ArrowRight = document.getElementById('mon-f02-arrow-right');
+        const monF02SetsLeft = document.getElementById('mon-f02-sets-left');
+        const monF02SetsRight = document.getElementById('mon-f02-sets-right');
+        const monF02Timeout = document.getElementById('mon-f02-timeout');
+
         const channel = new BroadcastChannel('basketball-timer');
 
         function broadcastState() {
@@ -425,41 +524,66 @@
         }
 
         function updateMonitor() {
-            monPeriod.textContent = state.period === null ? ' ' : state.period;
+            if (state.functionMode === 'F02') {
+                // F02 Monitor update
+                monF02Period.textContent = state.period === null ? ' ' : state.period;
 
-            const mins = state.timerMinutes;
-            const secs = state.timerSeconds;
-            if (state.showTenths && mins === 0 && secs < 60) {
-                const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
-                monTimer.textContent = `${secsStr}.${state.timerTenths}`;
-            } else {
-                const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
-                const sStr = secs < 10 ? `0${secs}` : `${secs}`;
-                monTimer.textContent = `${mStr}:${sStr}`;
-            }
-
-            if (state.shotClockBlank) {
-                monShotClock.textContent = '';
-            } else if (state.shotClock < 10) {
-                monShotClock.textContent = `${state.shotClock}.${state.shotClockTenths}`;
-            } else {
-                monShotClock.textContent = `${state.shotClock}`;
-            }
-
-            if (state.programMode) {
-                monScoreHome.textContent = '';
-                monScoreGuest.textContent = `P${String(state.programNumber).padStart(2, '0')}`;
-            } else {
                 const leftScore = state.courtFlipped ? state.scoreGuest : state.scoreHome;
                 const rightScore = state.courtFlipped ? state.scoreHome : state.scoreGuest;
-                const leftBlank = state.courtFlipped ? state.scoreGuestBlank : state.scoreHomeBlank;
-                const rightBlank = state.courtFlipped ? state.scoreHomeBlank : state.scoreGuestBlank;
-                monScoreHome.textContent = leftBlank ? '' : leftScore;
-                monScoreGuest.textContent = rightBlank ? '' : rightScore;
-            }
+                monF02ScoreLeft.textContent = leftScore;
+                monF02ScoreRight.textContent = rightScore;
 
-            monArrowLeft.classList.toggle('active', state.arrowLeft);
-            monArrowRight.classList.toggle('active', state.arrowRight);
+                monF02ArrowLeft.classList.toggle('active', state.arrowLeft);
+                monF02ArrowRight.classList.toggle('active', state.arrowRight);
+
+                const gameSetsL = state.courtFlipped ? state.gameSetsRight : state.gameSetsLeft;
+                const gameSetsR = state.courtFlipped ? state.gameSetsLeft : state.gameSetsRight;
+                monF02SetsLeft.textContent = gameSetsL;
+                monF02SetsRight.textContent = gameSetsR;
+
+                if (state.timeoutTimerBlank) {
+                    monF02Timeout.textContent = '';
+                } else {
+                    monF02Timeout.textContent = state.timeoutTimer;
+                }
+            } else {
+                // F01 Monitor update (original behavior)
+                monPeriod.textContent = state.period === null ? ' ' : state.period;
+
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+                if (state.showTenths && mins === 0 && secs < 60) {
+                    const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
+                    monTimer.textContent = `${secsStr}.${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    monTimer.textContent = `${mStr}:${sStr}`;
+                }
+
+                if (state.shotClockBlank) {
+                    monShotClock.textContent = '';
+                } else if (state.shotClock < 10) {
+                    monShotClock.textContent = `${state.shotClock}.${state.shotClockTenths}`;
+                } else {
+                    monShotClock.textContent = `${state.shotClock}`;
+                }
+
+                if (state.programMode) {
+                    monScoreHome.textContent = '';
+                    monScoreGuest.textContent = `P${String(state.programNumber).padStart(2, '0')}`;
+                } else {
+                    const leftScore = state.courtFlipped ? state.scoreGuest : state.scoreHome;
+                    const rightScore = state.courtFlipped ? state.scoreHome : state.scoreGuest;
+                    const leftBlank = state.courtFlipped ? state.scoreGuestBlank : state.scoreHomeBlank;
+                    const rightBlank = state.courtFlipped ? state.scoreHomeBlank : state.scoreGuestBlank;
+                    monScoreHome.textContent = leftBlank ? '' : leftScore;
+                    monScoreGuest.textContent = rightBlank ? '' : rightScore;
+                }
+
+                monArrowLeft.classList.toggle('active', state.arrowLeft);
+                monArrowRight.classList.toggle('active', state.arrowRight);
+            }
 
             broadcastState();
         }
@@ -844,11 +968,218 @@
             updateMonitor();
         });
 
-        // Change Function button
-        document.getElementById('change-function').addEventListener('click', () => {
+        // Change Function - shared logic
+        function switchFunctionMode() {
             currentFunctionIndex = (currentFunctionIndex + 1) % functionModes.length;
             const mode = functionModes[currentFunctionIndex];
             document.querySelector('h1').textContent = `${mode.code} ${mode.name}`;
+
+            // Update state with function mode
+            state.functionMode = mode.code;
+
+            // Toggle UI visibility
+            document.getElementById('monitor-f01').style.display = mode.code === 'F01' ? 'block' : 'none';
+            document.getElementById('monitor-f02').style.display = mode.code === 'F02' ? 'block' : 'none';
+            document.getElementById('controls-f01').style.display = mode.code === 'F01' ? 'flex' : 'none';
+            document.getElementById('controls-f02').style.display = mode.code === 'F02' ? 'flex' : 'none';
+
+            updateMonitor();
+        }
+
+        // Change Function buttons (F01 and F02)
+        document.getElementById('change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f02-change-function').addEventListener('click', switchFunctionMode);
+
+        // =====================
+        // F02 Event Handlers
+        // =====================
+
+        let timeoutTimerInterval = null;
+
+        function timeoutTimerTick() {
+            state.timeoutTimerTenths--;
+            if (state.timeoutTimerTenths < 0) {
+                state.timeoutTimerTenths = 9;
+                state.timeoutTimer--;
+            }
+            if (state.timeoutTimer < 0) {
+                state.timeoutTimer = 0;
+                state.timeoutTimerTenths = 0;
+                clearInterval(timeoutTimerInterval);
+                timeoutTimerInterval = null;
+                state.timeoutTimerRunning = false;
+                document.getElementById('f02-timeout-start-stop').classList.remove('toggled');
+                playBuzzer();
+                state.timeoutTimerBlank = true;
+            }
+            updateMonitor();
+        }
+
+        // Timeout Timer - +1s (shows timer for adjustment)
+        document.getElementById('f02-timeout-plus-1s').addEventListener('click', () => {
+            state.timeoutTimerBlank = false;
+            state.timeoutTimer = Math.min(99, state.timeoutTimer + 1);
+            updateMonitor();
+        });
+
+        // Timeout Timer - -1s (shows timer for adjustment)
+        document.getElementById('f02-timeout-minus-1s').addEventListener('click', () => {
+            state.timeoutTimerBlank = false;
+            state.timeoutTimer = Math.max(0, state.timeoutTimer - 1);
+            updateMonitor();
+        });
+
+        // Timeout Timer - Reset (memorizes time or blanks after stop)
+        document.getElementById('f02-timeout-reset').addEventListener('click', () => {
+            if (state.timeoutTimerRunning) {
+                // Timer is running - do nothing, must stop first
+                return;
+            }
+            if (!state.timeoutTimerBlank) {
+                // Timer was adjusted/stopped - memorize preset and blank
+                state.timeoutTimerPreset = state.timeoutTimer;
+                state.timeoutTimerBlank = true;
+            } else {
+                // Timer is blank - reset to preset and keep blank
+                state.timeoutTimer = state.timeoutTimerPreset;
+                state.timeoutTimerTenths = 0;
+            }
+            updateMonitor();
+        });
+
+        // Timeout Timer - Start/Stop
+        document.getElementById('f02-timeout-start-stop').addEventListener('click', () => {
+            if (state.timeoutTimerRunning) {
+                clearInterval(timeoutTimerInterval);
+                timeoutTimerInterval = null;
+                state.timeoutTimerRunning = false;
+            } else {
+                state.timeoutTimerBlank = false;
+                state.timeoutTimerRunning = true;
+                timeoutTimerInterval = setInterval(timeoutTimerTick, 100);
+            }
+            document.getElementById('f02-timeout-start-stop').classList.toggle('toggled', state.timeoutTimerRunning);
+            updateMonitor();
+        });
+
+        // F02 Score - Arrow Left (Serve)
+        document.getElementById('f02-score-arrow-left').addEventListener('click', () => {
+            if (state.arrowLeft) { state.arrowLeft = false; }
+            else { state.arrowLeft = true; state.arrowRight = false; }
+            document.getElementById('f02-score-arrow-left').classList.toggle('toggled', state.arrowLeft);
+            document.getElementById('f02-score-arrow-right').classList.toggle('toggled', state.arrowRight);
+            updateMonitor();
+        });
+
+        // F02 Score - Arrow Right (Serve)
+        document.getElementById('f02-score-arrow-right').addEventListener('click', () => {
+            if (state.arrowRight) { state.arrowRight = false; }
+            else { state.arrowRight = true; state.arrowLeft = false; }
+            document.getElementById('f02-score-arrow-left').classList.toggle('toggled', state.arrowLeft);
+            document.getElementById('f02-score-arrow-right').classList.toggle('toggled', state.arrowRight);
+            updateMonitor();
+        });
+
+        // F02 Score - Period
+        document.getElementById('f02-score-period').addEventListener('click', () => {
+            const cycle = [null, 1, 2, 3, 4, 5, 'E'];
+            const idx = cycle.indexOf(state.period);
+            state.period = cycle[(idx + 1) % cycle.length];
+            updateMonitor();
+        });
+
+        // F02 Score - L+1
+        document.getElementById('f02-score-left-plus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.scoreGuest = Math.min(99, state.scoreGuest + 1);
+            } else {
+                state.scoreHome = Math.min(99, state.scoreHome + 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Score - R+1
+        document.getElementById('f02-score-right-plus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.scoreHome = Math.min(99, state.scoreHome + 1);
+            } else {
+                state.scoreGuest = Math.min(99, state.scoreGuest + 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Score - L-1
+        document.getElementById('f02-score-left-minus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.scoreGuest = Math.max(0, state.scoreGuest - 1);
+            } else {
+                state.scoreHome = Math.max(0, state.scoreHome - 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Score - R-1
+        document.getElementById('f02-score-right-minus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.scoreHome = Math.max(0, state.scoreHome - 1);
+            } else {
+                state.scoreGuest = Math.max(0, state.scoreGuest - 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Score - Reset
+        document.getElementById('f02-score-reset').addEventListener('click', () => {
+            state.scoreHome = 0;
+            state.scoreGuest = 0;
+            updateMonitor();
+        });
+
+        // F02 Game Sets - L+1
+        document.getElementById('f02-sets-left-plus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.gameSetsRight = Math.min(9, state.gameSetsRight + 1);
+            } else {
+                state.gameSetsLeft = Math.min(9, state.gameSetsLeft + 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Game Sets - R+1
+        document.getElementById('f02-sets-right-plus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.gameSetsLeft = Math.min(9, state.gameSetsLeft + 1);
+            } else {
+                state.gameSetsRight = Math.min(9, state.gameSetsRight + 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Game Sets - L-1
+        document.getElementById('f02-sets-left-minus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.gameSetsRight = Math.max(0, state.gameSetsRight - 1);
+            } else {
+                state.gameSetsLeft = Math.max(0, state.gameSetsLeft - 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Game Sets - R-1
+        document.getElementById('f02-sets-right-minus').addEventListener('click', () => {
+            if (state.courtFlipped) {
+                state.gameSetsLeft = Math.max(0, state.gameSetsLeft - 1);
+            } else {
+                state.gameSetsRight = Math.max(0, state.gameSetsRight - 1);
+            }
+            updateMonitor();
+        });
+
+        // F02 Game Sets - Reset
+        document.getElementById('f02-sets-reset').addEventListener('click', () => {
+            state.gameSetsLeft = 0;
+            state.gameSetsRight = 0;
+            updateMonitor();
         });
 
         updateMonitor();
