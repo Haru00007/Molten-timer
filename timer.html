@@ -234,7 +234,45 @@
             timeoutTimerTenths: 0,
             timeoutTimerRunning: false,
             timeoutTimerBlank: true,
-            timeoutTimerPreset: 30
+            timeoutTimerPreset: 30,
+            // F03 specific (Judo)
+            osaekomiTimer: 0,
+            osaekomiTimerRunning: false,
+            osaekomiTimerBlank: true,
+            osaekomiIpponTime: 25,
+            osaekomiWazaTime: 20,
+            wazaAriActive: false,
+            // F04 specific (Boxing)
+            f04Programs: [],
+            f04TotalRounds: 0,
+            f04CurrentRound: 1,
+            f04CurrentProgramIndex: 0,
+            f04ProgrammingMode: false,
+            f04ProgramStep: 'time',
+            f04DisplayProgram: 1,
+            f04FirstBellFired: false,
+            f04MatchRunning: false,
+            // F05 specific (Wrestling)
+            f05Programs: [],
+            f05WoundTimerPreset: 120,
+            f05FirstBellInterval: 30,
+            f05CurrentProgramIndex: 0,
+            f05ProgrammingMode: false,
+            f05ProgrammingStep: 'time',
+            f05DisplayProgram: 1,
+            f05ScoreLeft: 0,
+            f05ScoreRight: 0,
+            f05WinCountLeft: null,
+            f05WinCountRight: null,
+            f05WoundTimerLeft: 0,
+            f05WoundTimerRight: 0,
+            f05WoundTimerLeftRunning: false,
+            f05WoundTimerRightRunning: false,
+            f05WoundDisplayLeft: false,
+            f05WoundDisplayRight: false,
+            f05MatchRunning: false,
+            f05LastBellLeft: 0,
+            f05LastBellRight: 0
         };
 
         const timerDisplayEl = document.getElementById('timer-display');
@@ -307,6 +345,169 @@
                     shotClockEl.textContent = '';
                 } else {
                     shotClockEl.textContent = state.timeoutTimer;
+                }
+            } else if (state.functionMode === 'F03') {
+                // F03 Mode: Judo
+                // Top row: Match time (same as F01 timer)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+
+                const isTenthsMode = state.showTenths && mins === 0 && secs < 60;
+                timerDisplayEl.classList.toggle('left-align', isTenthsMode);
+
+                if (isTenthsMode) {
+                    const secsStr = secs < 10 ? `!${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${secsStr}. ${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Hide arrows for F03
+                arrowLeftEl.classList.remove('active');
+                arrowRightEl.classList.remove('active');
+
+                // Middle row: Hide H/G labels and dots
+                labelLeftEl.textContent = '';
+                labelRightEl.textContent = '';
+                labelLeftEl.classList.remove('active');
+                labelRightEl.classList.remove('active');
+                dots.forEach((dot) => {
+                    dot.classList.remove('active');
+                });
+
+                // Bottom row: Hide scores, show osaekomi timer in center
+                scoreHomeEl.textContent = '';
+                scoreGuestEl.textContent = '';
+
+                // Osaekomi timer in center
+                if (state.osaekomiTimerBlank) {
+                    shotClockEl.textContent = '';
+                } else {
+                    shotClockEl.textContent = state.osaekomiTimer;
+                }
+            } else if (state.functionMode === 'F04') {
+                // F04 Mode: Boxing
+                // Top row: Match time (same as F01 timer)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+
+                const isTenthsMode = state.showTenths && mins === 0 && secs < 60;
+                timerDisplayEl.classList.toggle('left-align', isTenthsMode);
+
+                if (isTenthsMode) {
+                    const secsStr = secs < 10 ? `!${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${secsStr}. ${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Hide arrows for F04
+                arrowLeftEl.classList.remove('active');
+                arrowRightEl.classList.remove('active');
+
+                // Middle row: Hide H/G labels and dots
+                labelLeftEl.textContent = '';
+                labelRightEl.textContent = '';
+                labelLeftEl.classList.remove('active');
+                labelRightEl.classList.remove('active');
+                dots.forEach((dot) => {
+                    dot.classList.remove('active');
+                });
+
+                // Bottom row: Round number (left) / Program number (right) during programming
+                if (state.f04ProgrammingMode) {
+                    scoreHomeEl.textContent = state.f04TotalRounds;
+                    if (state.f04ProgramStep === 'time') {
+                        scoreGuestEl.textContent = `P${String(state.f04DisplayProgram).padStart(2, '0')}`;
+                    } else {
+                        scoreGuestEl.textContent = `F${String(state.f04DisplayProgram).padStart(2, '0')}`;
+                    }
+                    shotClockEl.textContent = '';
+                } else if (state.f04MatchRunning || state.f04TotalRounds > 0) {
+                    scoreHomeEl.textContent = state.f04CurrentRound;
+                    scoreGuestEl.textContent = '';
+                    shotClockEl.textContent = '';
+                } else {
+                    scoreHomeEl.textContent = '0';
+                    scoreGuestEl.textContent = 'P01';
+                    shotClockEl.textContent = '';
+                }
+            } else if (state.functionMode === 'F05') {
+                // F05 Mode: Wrestling
+                // Top row: Match time
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+
+                const isTenthsMode = state.showTenths && mins === 0 && secs < 60;
+                timerDisplayEl.classList.toggle('left-align', isTenthsMode);
+
+                if (isTenthsMode) {
+                    const secsStr = secs < 10 ? `!${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${secsStr}. ${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Hide arrows for F05
+                arrowLeftEl.classList.remove('active');
+                arrowRightEl.classList.remove('active');
+
+                // Middle row: Period dots (no H/G labels)
+                labelLeftEl.textContent = '';
+                labelRightEl.textContent = '';
+                labelLeftEl.classList.remove('active');
+                labelRightEl.classList.remove('active');
+
+                // Show period dots based on current program index
+                const periodDots = state.f05CurrentProgramIndex + 1;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index < periodDots);
+                });
+
+                // Bottom row: Score/Wound display (left), Winner (center), Score/Program (right)
+                if (state.f05ProgrammingMode) {
+                    if (state.f05ProgrammingStep === 'time') {
+                        scoreHomeEl.textContent = '';
+                        shotClockEl.textContent = '';
+                        scoreGuestEl.textContent = `P${String(state.f05DisplayProgram).padStart(2, '0')}`;
+                    } else if (state.f05ProgrammingStep === 'wound') {
+                        scoreHomeEl.textContent = state.f05WoundTimerPreset;
+                        shotClockEl.textContent = '';
+                        scoreGuestEl.textContent = state.f05WoundTimerPreset;
+                    } else if (state.f05ProgrammingStep === 'bell') {
+                        scoreHomeEl.textContent = state.f05FirstBellInterval;
+                        shotClockEl.textContent = '';
+                        scoreGuestEl.textContent = state.f05FirstBellInterval;
+                    }
+                } else {
+                    // Match mode
+                    if (state.f05WoundDisplayLeft) {
+                        scoreHomeEl.textContent = state.f05WoundTimerLeft;
+                    } else {
+                        scoreHomeEl.textContent = state.f05ScoreLeft;
+                    }
+
+                    if (state.f05WoundDisplayRight) {
+                        scoreGuestEl.textContent = state.f05WoundTimerRight;
+                    } else {
+                        scoreGuestEl.textContent = state.f05ScoreRight;
+                    }
+
+                    // Winner display in center (shot clock position)
+                    let winnerStr = '';
+                    if (state.f05WinCountLeft !== null) {
+                        winnerStr += state.f05WinCountLeft;
+                    }
+                    if (state.f05WinCountRight !== null) {
+                        winnerStr += state.f05WinCountRight;
+                    }
+                    shotClockEl.textContent = winnerStr;
                 }
             } else {
                 // F01 Mode: Basketball (original behavior)

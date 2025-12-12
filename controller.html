@@ -87,6 +87,7 @@
         .monitor .shot-clock-display {
             color: #d00;
             min-width: 40px;
+            min-height: 1em;
             text-align: right;
         }
 
@@ -225,6 +226,48 @@
         </div>
     </div>
 
+    <!-- F03 Monitor (Judo) -->
+    <div id="monitor-f03" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f03-timer" class="timer-display">10:00</span>
+        </div>
+        <div class="monitor-row">
+            <span id="mon-f03-waza" class="mon-slot" style="color: #d00; min-width: 60px;"></span>
+            <span id="mon-f03-osaekomi" class="shot-clock-display"></span>
+        </div>
+    </div>
+
+    <!-- F04 Monitor (Boxing) -->
+    <div id="monitor-f04" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f04-timer" class="timer-display">0:00</span>
+        </div>
+        <div class="monitor-row">
+            <span id="mon-f04-round" class="score-display" style="min-width: 40px;">0</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f04-program" class="score-display" style="min-width: 60px;">P01</span>
+        </div>
+    </div>
+
+    <!-- F05 Monitor (Wrestling) -->
+    <div id="monitor-f05" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span id="mon-f05-period" class="period-display mon-slot">1</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f05-timer" class="timer-display">0:00</span>
+        </div>
+        <div class="monitor-row">
+            <span id="mon-f05-score-left" class="score-display" style="min-width: 50px;">0</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f05-winner" class="score-display" style="min-width: 40px; color: #0d0;"></span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f05-score-right" class="score-display" style="min-width: 50px;">0</span>
+        </div>
+    </div>
+
     <!-- F01 Controls -->
     <div id="controls-f01" class="controls-container">
         <div class="control-section">
@@ -358,6 +401,164 @@
         </div>
     </div>
 
+    <!-- F03 Controls (Judo) -->
+    <div id="controls-f03" class="controls-container" style="display: none;">
+        <div class="control-section">
+            <div class="section-title">Waza</div>
+            <div class="button-row">
+                <button id="f03-waza-on" class="control-btn">On</button>
+                <button id="f03-waza-off" class="control-btn">Off</button>
+            </div>
+        </div>
+
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f03-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Timer</div>
+            <div class="button-row">
+                <button id="f03-timer-clear" class="control-btn">Clear</button>
+                <button id="f03-timer-count-mode" class="control-btn">Up/Down</button>
+                <button id="f03-timer-show-tenths" class="control-btn">1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="f03-timer-plus-1m" class="control-btn">+1m</button>
+                <button id="f03-timer-minus-1m" class="control-btn">-1m</button>
+                <button id="f03-timer-plus-1s" class="control-btn">+1s</button>
+                <button id="f03-timer-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f03-timer-plus-tenth" class="control-btn">+1/10s</button>
+                <button id="f03-timer-minus-tenth" class="control-btn">-1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="f03-timer-reset" class="control-btn">Reset</button>
+                <button id="f03-timer-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Osae-komi</div>
+            <div class="button-row">
+                <button id="f03-osaekomi-plus-1s" class="control-btn">+1s</button>
+                <button id="f03-osaekomi-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f03-osaekomi-reset" class="control-btn">Reset</button>
+                <button id="f03-osaekomi-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- F04 Controls (Boxing) -->
+    <div id="controls-f04" class="controls-container" style="display: none;">
+        <div class="control-section">
+            <div class="section-title">Rounds</div>
+            <div class="button-row">
+                <button id="f04-rounds-plus" class="control-btn">+1R</button>
+                <button id="f04-rounds-minus" class="control-btn">-1R</button>
+            </div>
+            <div class="button-row">
+                <button id="f04-rounds-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f04-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Timer</div>
+            <div class="button-row">
+                <button id="f04-timer-clear" class="control-btn">Clear</button>
+                <button id="f04-timer-show-tenths" class="control-btn">1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="f04-timer-plus-1m" class="control-btn">+1m</button>
+                <button id="f04-timer-minus-1m" class="control-btn">-1m</button>
+                <button id="f04-timer-plus-1s" class="control-btn">+1s</button>
+                <button id="f04-timer-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f04-timer-reset" class="control-btn">Reset</button>
+                <button id="f04-timer-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- F05 Controls (Wrestling) -->
+    <div id="controls-f05" class="controls-container" style="display: none;">
+        <div class="control-section">
+            <div class="section-title">Win/Wound</div>
+            <div class="button-row">
+                <button id="f05-win-left-plus" class="control-btn">L+1</button>
+                <button id="f05-win-right-plus" class="control-btn">R+1</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-win-left-minus" class="control-btn">L-1</button>
+                <button id="f05-win-right-minus" class="control-btn">R-1</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-wound-plus-1s" class="control-btn">+1s</button>
+                <button id="f05-wound-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-wound-left-start" class="control-btn">L-Start</button>
+                <button id="f05-wound-right-start" class="control-btn">R-Start</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-wound-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f05-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Timer</div>
+            <div class="button-row">
+                <button id="f05-timer-clear" class="control-btn">Clear</button>
+                <button id="f05-timer-show-tenths" class="control-btn">1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-timer-plus-1m" class="control-btn">+1m</button>
+                <button id="f05-timer-minus-1m" class="control-btn">-1m</button>
+                <button id="f05-timer-plus-1s" class="control-btn">+1s</button>
+                <button id="f05-timer-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-timer-reset" class="control-btn">Reset</button>
+                <button id="f05-timer-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Score</div>
+            <div class="button-row">
+                <button id="f05-score-left-plus" class="control-btn">L+1</button>
+                <button id="f05-score-right-plus" class="control-btn">R+1</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-score-left-minus" class="control-btn">L-1</button>
+                <button id="f05-score-right-minus" class="control-btn">R-1</button>
+            </div>
+            <div class="button-row">
+                <button id="f05-score-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -429,7 +630,47 @@
             timeoutTimerTenths: 0,
             timeoutTimerRunning: false,
             timeoutTimerBlank: true,
-            timeoutTimerPreset: 30
+            timeoutTimerPreset: 30,
+            // F03 specific (Judo)
+            osaekomiTimer: 0,
+            osaekomiTimerRunning: false,
+            osaekomiTimerBlank: true,
+            osaekomiIpponTime: 25,
+            osaekomiWazaTime: 20,
+            osaekomiSettingMode: 0, // 0=normal, 1=ippon setting, 2=waza setting
+            wazaAriActive: false,
+            settingBlink: false,
+            // F04 specific (Boxing)
+            f04Programs: [],           // [{time: 180, firstBell: 30}, ...]
+            f04TotalRounds: 0,         // 設定したラウンド数
+            f04CurrentRound: 1,        // 現在のラウンド
+            f04CurrentProgramIndex: 0, // 現在のプログラムインデックス
+            f04ProgrammingMode: false, // プログラミングモード中か
+            f04ProgramStep: 'time',    // 'time' or 'firstbell'
+            f04DisplayProgram: 1,      // 表示しているプログラム番号
+            f04FirstBellFired: false,  // 予鈴を鳴らしたか
+            f04MatchRunning: false,    // 試合進行中か
+            // F05 specific (Wrestling)
+            f05Programs: [],              // [{time: 180}, ...]
+            f05WoundTimerPreset: 120,     // 負傷タイマープリセット(秒)
+            f05FirstBellInterval: 30,     // 予鈴間隔(秒)
+            f05CurrentProgramIndex: 0,
+            f05ProgrammingMode: false,
+            f05ProgrammingStep: 'time',   // 'time', 'wound', 'bell'
+            f05DisplayProgram: 1,
+            f05ScoreLeft: 0,
+            f05ScoreRight: 0,
+            f05WinCountLeft: null,        // null=非表示, 0-9
+            f05WinCountRight: null,
+            f05WoundTimerLeft: 0,
+            f05WoundTimerRight: 0,
+            f05WoundTimerLeftRunning: false,
+            f05WoundTimerRightRunning: false,
+            f05WoundDisplayLeft: false,   // 負傷タイマー表示中か
+            f05WoundDisplayRight: false,
+            f05MatchRunning: false,
+            f05LastBellLeft: 0,           // 左の最後にブザー鳴らした秒数
+            f05LastBellRight: 0           // 右の最後にブザー鳴らした秒数
         };
 
         let timerInterval = null;
@@ -514,6 +755,23 @@
         const monF02SetsRight = document.getElementById('mon-f02-sets-right');
         const monF02Timeout = document.getElementById('mon-f02-timeout');
 
+        // F03 Monitor elements
+        const monF03Timer = document.getElementById('mon-f03-timer');
+        const monF03Waza = document.getElementById('mon-f03-waza');
+        const monF03Osaekomi = document.getElementById('mon-f03-osaekomi');
+
+        // F04 Monitor elements
+        const monF04Timer = document.getElementById('mon-f04-timer');
+        const monF04Round = document.getElementById('mon-f04-round');
+        const monF04Program = document.getElementById('mon-f04-program');
+
+        // F05 Monitor elements
+        const monF05Period = document.getElementById('mon-f05-period');
+        const monF05Timer = document.getElementById('mon-f05-timer');
+        const monF05ScoreLeft = document.getElementById('mon-f05-score-left');
+        const monF05ScoreRight = document.getElementById('mon-f05-score-right');
+        const monF05Winner = document.getElementById('mon-f05-winner');
+
         const channel = new BroadcastChannel('basketball-timer');
 
         function broadcastState() {
@@ -545,6 +803,124 @@
                     monF02Timeout.textContent = '';
                 } else {
                     monF02Timeout.textContent = state.timeoutTimer;
+                }
+            } else if (state.functionMode === 'F03') {
+                // F03 Monitor update (Judo)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+                if (state.showTenths && mins === 0 && secs < 60) {
+                    const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
+                    monF03Timer.textContent = `${secsStr}.${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    monF03Timer.textContent = `${mStr}:${sStr}`;
+                }
+
+                // W-ARI indicator
+                monF03Waza.textContent = state.wazaAriActive ? '(W-ARI)' : '';
+
+                // Osaekomi timer (with blink for setting mode)
+                if (state.osaekomiTimerBlank && !state.settingBlink) {
+                    monF03Osaekomi.textContent = '\u00A0';
+                } else if (state.osaekomiSettingMode === 1) {
+                    // Ippon time setting
+                    monF03Osaekomi.textContent = state.settingBlink ? '\u00A0' : state.osaekomiIpponTime;
+                } else if (state.osaekomiSettingMode === 2) {
+                    // Waza time setting (blinks)
+                    monF03Osaekomi.textContent = state.settingBlink ? '\u00A0' : state.osaekomiWazaTime;
+                } else {
+                    monF03Osaekomi.textContent = state.osaekomiTimer;
+                }
+            } else if (state.functionMode === 'F04') {
+                // F04 Monitor update (Boxing)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+                if (state.showTenths && mins === 0 && secs < 60) {
+                    const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
+                    monF04Timer.textContent = `${secsStr}.${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    monF04Timer.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Round / Program display
+                if (state.f04ProgrammingMode) {
+                    // Programming mode: show program number
+                    monF04Round.textContent = state.f04TotalRounds;
+                    if (state.f04ProgramStep === 'time') {
+                        monF04Program.textContent = `P${String(state.f04DisplayProgram).padStart(2, '0')}`;
+                    } else {
+                        monF04Program.textContent = `F${String(state.f04DisplayProgram).padStart(2, '0')}`;
+                    }
+                } else if (state.f04MatchRunning || state.f04TotalRounds > 0) {
+                    // Match mode: show current round
+                    monF04Round.textContent = state.f04CurrentRound;
+                    monF04Program.textContent = '';
+                } else {
+                    // Initial state
+                    monF04Round.textContent = '0';
+                    monF04Program.textContent = 'P01';
+                }
+            } else if (state.functionMode === 'F05') {
+                // F05 Monitor update (Wrestling)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+                if (state.showTenths && mins === 0 && secs < 60) {
+                    const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
+                    monF05Timer.textContent = `${secsStr}.${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    monF05Timer.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Period display
+                monF05Period.textContent = state.f05CurrentProgramIndex + 1;
+
+                // Score / Wound timer / Program display
+                if (state.f05ProgrammingMode) {
+                    if (state.f05ProgrammingStep === 'time') {
+                        monF05ScoreLeft.textContent = '';
+                        monF05Winner.textContent = '';
+                        monF05ScoreRight.textContent = `P${String(state.f05DisplayProgram).padStart(2, '0')}`;
+                    } else if (state.f05ProgrammingStep === 'wound') {
+                        monF05ScoreLeft.textContent = state.f05WoundTimerPreset;
+                        monF05Winner.textContent = '';
+                        monF05ScoreRight.textContent = state.f05WoundTimerPreset;
+                    } else if (state.f05ProgrammingStep === 'bell') {
+                        monF05ScoreLeft.textContent = state.f05FirstBellInterval;
+                        monF05Winner.textContent = '';
+                        monF05ScoreRight.textContent = state.f05FirstBellInterval;
+                    }
+                } else {
+                    // Match mode
+                    if (state.f05WoundDisplayLeft) {
+                        monF05ScoreLeft.textContent = state.f05WoundTimerLeft;
+                    } else {
+                        monF05ScoreLeft.textContent = state.f05ScoreLeft;
+                    }
+
+                    if (state.f05WoundDisplayRight) {
+                        monF05ScoreRight.textContent = state.f05WoundTimerRight;
+                    } else {
+                        monF05ScoreRight.textContent = state.f05ScoreRight;
+                    }
+
+                    // Winner display (null = blank)
+                    let winnerStr = '';
+                    if (state.f05WinCountLeft !== null) {
+                        winnerStr += state.f05WinCountLeft;
+                    } else {
+                        winnerStr += ' ';
+                    }
+                    if (state.f05WinCountRight !== null) {
+                        winnerStr += state.f05WinCountRight;
+                    } else {
+                        winnerStr += ' ';
+                    }
+                    monF05Winner.textContent = winnerStr.trim() === '' ? '' : winnerStr;
                 }
             } else {
                 // F01 Monitor update (original behavior)
@@ -980,15 +1356,24 @@
             // Toggle UI visibility
             document.getElementById('monitor-f01').style.display = mode.code === 'F01' ? 'block' : 'none';
             document.getElementById('monitor-f02').style.display = mode.code === 'F02' ? 'block' : 'none';
+            document.getElementById('monitor-f03').style.display = mode.code === 'F03' ? 'block' : 'none';
+            document.getElementById('monitor-f04').style.display = mode.code === 'F04' ? 'block' : 'none';
+            document.getElementById('monitor-f05').style.display = mode.code === 'F05' ? 'block' : 'none';
             document.getElementById('controls-f01').style.display = mode.code === 'F01' ? 'flex' : 'none';
             document.getElementById('controls-f02').style.display = mode.code === 'F02' ? 'flex' : 'none';
+            document.getElementById('controls-f03').style.display = mode.code === 'F03' ? 'flex' : 'none';
+            document.getElementById('controls-f04').style.display = mode.code === 'F04' ? 'flex' : 'none';
+            document.getElementById('controls-f05').style.display = mode.code === 'F05' ? 'flex' : 'none';
 
             updateMonitor();
         }
 
-        // Change Function buttons (F01 and F02)
+        // Change Function buttons (F01, F02, F03, F04, F05)
         document.getElementById('change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f02-change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f03-change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f04-change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f05-change-function').addEventListener('click', switchFunctionMode);
 
         // =====================
         // F02 Event Handlers
@@ -1179,6 +1564,956 @@
         document.getElementById('f02-sets-reset').addEventListener('click', () => {
             state.gameSetsLeft = 0;
             state.gameSetsRight = 0;
+            updateMonitor();
+        });
+
+        // =====================
+        // F03 Event Handlers (Judo)
+        // =====================
+
+        let osaekomiInterval = null;
+        let settingBlinkInterval = null;
+        let f03TimerInterval = null;
+
+        function osaekomiTick() {
+            state.osaekomiTimer++;
+            const targetTime = state.wazaAriActive ? state.osaekomiWazaTime : state.osaekomiIpponTime;
+
+            if (state.osaekomiTimer >= targetTime) {
+                // Reached target time - stop both timers, buzzer
+                clearInterval(osaekomiInterval);
+                osaekomiInterval = null;
+                state.osaekomiTimerRunning = false;
+
+                // Also stop match timer
+                if (f03TimerInterval) {
+                    clearInterval(f03TimerInterval);
+                    f03TimerInterval = null;
+                    state.timerRunning = false;
+                    document.getElementById('f03-timer-start-stop').classList.remove('toggled');
+                }
+
+                document.getElementById('f03-osaekomi-start-stop').classList.remove('toggled');
+                playDoubleBuzzer();
+                state.osaekomiTimerBlank = true;
+            }
+            updateMonitor();
+        }
+
+        function f03TimerTick() {
+            if (state.timerCountUp) {
+                state.timerTenths++;
+                if (state.timerTenths >= 10) {
+                    state.timerTenths = 0;
+                    state.timerSeconds++;
+                    if (state.timerSeconds >= 60) {
+                        state.timerSeconds = 0;
+                        state.timerMinutes++;
+                    }
+                }
+            } else {
+                if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
+                    // Time's up - but only sound buzzer if osaekomi is not running
+                    if (!state.osaekomiTimerRunning) {
+                        clearInterval(f03TimerInterval);
+                        f03TimerInterval = null;
+                        state.timerRunning = false;
+                        document.getElementById('f03-timer-start-stop').classList.remove('toggled');
+                        playDoubleBuzzer();
+                    }
+                    // If osaekomi is running, just stop the timer silently
+                    else {
+                        clearInterval(f03TimerInterval);
+                        f03TimerInterval = null;
+                        state.timerRunning = false;
+                        document.getElementById('f03-timer-start-stop').classList.remove('toggled');
+                    }
+                } else {
+                    state.timerTenths--;
+                    if (state.timerTenths < 0) {
+                        state.timerTenths = 9;
+                        state.timerSeconds--;
+                        if (state.timerSeconds < 0) {
+                            state.timerSeconds = 59;
+                            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+                        }
+                    }
+                }
+            }
+            updateMonitor();
+        }
+
+        // Waza On - enable waza-ari mode (only when osaekomi is running)
+        document.getElementById('f03-waza-on').addEventListener('click', () => {
+            if (state.osaekomiTimerRunning) {
+                state.wazaAriActive = true;
+                document.getElementById('f03-waza-on').classList.add('toggled');
+                document.getElementById('f03-waza-off').classList.remove('toggled');
+                updateMonitor();
+            }
+        });
+
+        // Waza Off - disable waza-ari mode
+        document.getElementById('f03-waza-off').addEventListener('click', () => {
+            if (state.osaekomiTimerRunning) {
+                state.wazaAriActive = false;
+                document.getElementById('f03-waza-on').classList.remove('toggled');
+                document.getElementById('f03-waza-off').classList.add('toggled');
+                updateMonitor();
+            }
+        });
+
+        // F03 Timer Controls
+        document.getElementById('f03-timer-clear').addEventListener('click', () => {
+            state.timerMinutes = 0;
+            state.timerSeconds = 0;
+            state.timerTenths = 0;
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-count-mode').addEventListener('click', () => {
+            state.timerCountUp = !state.timerCountUp;
+            const btn = document.getElementById('f03-timer-count-mode');
+            btn.classList.toggle('toggled', state.timerCountUp);
+            btn.textContent = state.timerCountUp ? 'Up' : 'Down';
+            if (state.timerCountUp) {
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-show-tenths').addEventListener('click', () => {
+            state.showTenths = !state.showTenths;
+            document.getElementById('f03-timer-show-tenths').classList.toggle('toggled', state.showTenths);
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-plus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-minus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-plus-1s').addEventListener('click', () => {
+            state.timerSeconds++;
+            if (state.timerSeconds >= 60) { state.timerSeconds = 0; state.timerMinutes = Math.min(99, state.timerMinutes + 1); }
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-minus-1s').addEventListener('click', () => {
+            state.timerSeconds--;
+            if (state.timerSeconds < 0) { state.timerSeconds = 59; state.timerMinutes = Math.max(0, state.timerMinutes - 1); }
+            if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-plus-tenth').addEventListener('click', () => {
+            state.timerTenths++;
+            if (state.timerTenths >= 10) { state.timerTenths = 0; state.timerSeconds++; if (state.timerSeconds >= 60) { state.timerSeconds = 0; state.timerMinutes++; } }
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-minus-tenth').addEventListener('click', () => {
+            state.timerTenths--;
+            if (state.timerTenths < 0) { state.timerTenths = 9; state.timerSeconds--; if (state.timerSeconds < 0) { state.timerSeconds = 59; state.timerMinutes--; } }
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-reset').addEventListener('click', () => {
+            state.timerMinutes = Math.floor(state.timerPresetSeconds / 60);
+            state.timerSeconds = state.timerPresetSeconds % 60;
+            state.timerTenths = 0;
+            updateMonitor();
+        });
+
+        document.getElementById('f03-timer-start-stop').addEventListener('click', () => {
+            if (state.timerRunning) {
+                clearInterval(f03TimerInterval);
+                f03TimerInterval = null;
+                state.timerRunning = false;
+
+                // Also stop osaekomi timer when match timer stops
+                if (osaekomiInterval) {
+                    clearInterval(osaekomiInterval);
+                    osaekomiInterval = null;
+                    state.osaekomiTimerRunning = false;
+                    state.osaekomiTimer = 0;
+                    state.osaekomiTimerBlank = true;
+                    state.wazaAriActive = false;
+                    document.getElementById('f03-osaekomi-start-stop').classList.remove('toggled');
+                    document.getElementById('f03-waza-on').classList.remove('toggled');
+                    document.getElementById('f03-waza-off').classList.remove('toggled');
+                    playBuzzer();
+                }
+            } else {
+                state.timerRunning = true;
+                f03TimerInterval = setInterval(f03TimerTick, 100);
+            }
+            document.getElementById('f03-timer-start-stop').classList.toggle('toggled', state.timerRunning);
+            updateMonitor();
+        });
+
+        // Osae-komi Controls
+        document.getElementById('f03-osaekomi-plus-1s').addEventListener('click', () => {
+            if (state.osaekomiSettingMode === 2) {
+                state.osaekomiWazaTime = Math.min(99, state.osaekomiWazaTime + 1);
+            } else {
+                state.osaekomiSettingMode = 1;
+                state.osaekomiTimerBlank = false;
+                state.osaekomiIpponTime = Math.min(99, state.osaekomiIpponTime + 1);
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('f03-osaekomi-minus-1s').addEventListener('click', () => {
+            if (state.osaekomiSettingMode === 2) {
+                state.osaekomiWazaTime = Math.max(1, state.osaekomiWazaTime - 1);
+            } else {
+                state.osaekomiSettingMode = 1;
+                state.osaekomiTimerBlank = false;
+                state.osaekomiIpponTime = Math.max(1, state.osaekomiIpponTime - 1);
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('f03-osaekomi-reset').addEventListener('click', () => {
+            if (state.osaekomiTimerRunning) return;
+
+            if (state.osaekomiSettingMode === 0 || state.osaekomiSettingMode === 1) {
+                // Switch to waza time setting mode (blink)
+                state.osaekomiSettingMode = 2;
+                state.osaekomiTimerBlank = false;
+                settingBlinkInterval = setInterval(() => {
+                    state.settingBlink = !state.settingBlink;
+                    updateMonitor();
+                }, 500);
+            } else if (state.osaekomiSettingMode === 2) {
+                // Confirm and exit setting mode
+                state.osaekomiSettingMode = 0;
+                state.osaekomiTimerBlank = true;
+                state.settingBlink = false;
+                if (settingBlinkInterval) {
+                    clearInterval(settingBlinkInterval);
+                    settingBlinkInterval = null;
+                }
+            }
+            updateMonitor();
+        });
+
+        document.getElementById('f03-osaekomi-start-stop').addEventListener('click', () => {
+            // Exit setting mode if active
+            if (state.osaekomiSettingMode !== 0) {
+                state.osaekomiSettingMode = 0;
+                state.settingBlink = false;
+                if (settingBlinkInterval) {
+                    clearInterval(settingBlinkInterval);
+                    settingBlinkInterval = null;
+                }
+            }
+
+            if (state.osaekomiTimerRunning) {
+                // Stop osaekomi
+                clearInterval(osaekomiInterval);
+                osaekomiInterval = null;
+                state.osaekomiTimerRunning = false;
+                state.osaekomiTimer = 0;
+                state.osaekomiTimerBlank = true;
+                state.wazaAriActive = false;
+                document.getElementById('f03-waza-on').classList.remove('toggled');
+                document.getElementById('f03-waza-off').classList.remove('toggled');
+
+                // If match timer already at 0, sound buzzer for match end
+                if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
+                    playDoubleBuzzer();
+                }
+            } else {
+                // Start osaekomi (only if match timer is running or at 0 in osaekomi)
+                state.osaekomiTimer = 0;
+                state.osaekomiTimerBlank = false;
+                state.osaekomiTimerRunning = true;
+                osaekomiInterval = setInterval(osaekomiTick, 1000);
+            }
+            document.getElementById('f03-osaekomi-start-stop').classList.toggle('toggled', state.osaekomiTimerRunning);
+            updateMonitor();
+        });
+
+        // =====================
+        // F04 Event Handlers (Boxing)
+        // =====================
+
+        let f04TimerInterval = null;
+
+        function f04TimerTick() {
+            // Check for first bell
+            if (!state.f04FirstBellFired && state.f04Programs.length > 0) {
+                const currentProg = state.f04Programs[state.f04CurrentProgramIndex];
+                if (currentProg && currentProg.firstBell > 0) {
+                    const currentSecs = state.timerMinutes * 60 + state.timerSeconds;
+                    if (currentSecs <= currentProg.firstBell && currentSecs > 0) {
+                        state.f04FirstBellFired = true;
+                        playBuzzer();
+                    }
+                }
+            }
+
+            // Count down
+            if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
+                // Timer reached 0
+                clearInterval(f04TimerInterval);
+                f04TimerInterval = null;
+                state.timerRunning = false;
+                document.getElementById('f04-timer-start-stop').classList.remove('toggled');
+                playDoubleBuzzer();
+
+                // Move to next program or round
+                state.f04CurrentProgramIndex++;
+                if (state.f04CurrentProgramIndex >= state.f04Programs.length) {
+                    // All programs done, next round
+                    state.f04CurrentRound++;
+                    state.f04CurrentProgramIndex = 0;
+
+                    if (state.f04CurrentRound > state.f04TotalRounds) {
+                        // All rounds complete
+                        state.f04MatchRunning = false;
+                        state.f04CurrentRound = state.f04TotalRounds;
+                    } else {
+                        // Load first program of next round
+                        const nextProg = state.f04Programs[0];
+                        if (nextProg) {
+                            state.timerMinutes = Math.floor(nextProg.time / 60);
+                            state.timerSeconds = nextProg.time % 60;
+                            state.timerTenths = 0;
+                            state.f04FirstBellFired = false;
+                        }
+                    }
+                } else {
+                    // Load next program
+                    const nextProg = state.f04Programs[state.f04CurrentProgramIndex];
+                    if (nextProg) {
+                        state.timerMinutes = Math.floor(nextProg.time / 60);
+                        state.timerSeconds = nextProg.time % 60;
+                        state.timerTenths = 0;
+                        state.f04FirstBellFired = false;
+                    }
+                }
+            } else {
+                state.timerTenths--;
+                if (state.timerTenths < 0) {
+                    state.timerTenths = 9;
+                    state.timerSeconds--;
+                    if (state.timerSeconds < 0) {
+                        state.timerSeconds = 59;
+                        state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+                    }
+                }
+            }
+            updateMonitor();
+        }
+
+        // F04 Rounds +1
+        document.getElementById('f04-rounds-plus').addEventListener('click', () => {
+            if (state.f04ProgrammingMode && state.f04ProgramStep === 'rounds') {
+                state.f04TotalRounds = Math.min(99, state.f04TotalRounds + 1);
+            } else if (!state.f04MatchRunning) {
+                state.f04TotalRounds = Math.min(99, state.f04TotalRounds + 1);
+            }
+            updateMonitor();
+        });
+
+        // F04 Rounds -1
+        document.getElementById('f04-rounds-minus').addEventListener('click', () => {
+            if (state.f04ProgrammingMode && state.f04ProgramStep === 'rounds') {
+                state.f04TotalRounds = Math.max(0, state.f04TotalRounds - 1);
+            } else if (!state.f04MatchRunning) {
+                state.f04TotalRounds = Math.max(0, state.f04TotalRounds - 1);
+            }
+            updateMonitor();
+        });
+
+        // F04 Rounds Reset (also handles programming mode transitions)
+        document.getElementById('f04-rounds-reset').addEventListener('click', () => {
+            if (state.f04MatchRunning) {
+                // During match: reset current round timer
+                if (state.f04Programs.length > 0) {
+                    const currentProg = state.f04Programs[state.f04CurrentProgramIndex];
+                    if (currentProg) {
+                        state.timerMinutes = Math.floor(currentProg.time / 60);
+                        state.timerSeconds = currentProg.time % 60;
+                        state.timerTenths = 0;
+                        state.f04FirstBellFired = false;
+                    }
+                }
+            } else if (!state.f04ProgrammingMode) {
+                // Not in programming mode yet - reset all
+                state.f04Programs = [];
+                state.f04TotalRounds = 0;
+                state.f04CurrentRound = 1;
+                state.f04CurrentProgramIndex = 0;
+                state.f04DisplayProgram = 1;
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+            } else {
+                // In programming mode - handle transitions
+                const currentTimeSeconds = state.timerMinutes * 60 + state.timerSeconds;
+
+                if (state.f04ProgramStep === 'time') {
+                    if (currentTimeSeconds > 0) {
+                        // Save time and switch to first bell input
+                        if (state.f04Programs.length < state.f04DisplayProgram) {
+                            state.f04Programs.push({ time: currentTimeSeconds, firstBell: 0 });
+                        } else {
+                            state.f04Programs[state.f04DisplayProgram - 1].time = currentTimeSeconds;
+                        }
+                        state.f04ProgramStep = 'firstbell';
+                        state.timerMinutes = 0;
+                        state.timerSeconds = 0;
+                        state.timerTenths = 0;
+                    } else {
+                        // Time is 0 - go to rounds setting
+                        state.f04ProgramStep = 'rounds';
+                    }
+                } else if (state.f04ProgramStep === 'firstbell') {
+                    // Save first bell and move to next program
+                    if (state.f04Programs[state.f04DisplayProgram - 1]) {
+                        state.f04Programs[state.f04DisplayProgram - 1].firstBell = currentTimeSeconds;
+                    }
+                    state.f04DisplayProgram++;
+                    state.f04ProgramStep = 'time';
+                    state.timerMinutes = 0;
+                    state.timerSeconds = 0;
+                    state.timerTenths = 0;
+                } else if (state.f04ProgramStep === 'rounds') {
+                    // Confirm and exit programming mode
+                    state.f04ProgrammingMode = false;
+                    state.f04CurrentRound = 1;
+                    state.f04CurrentProgramIndex = 0;
+
+                    // Load first program
+                    if (state.f04Programs.length > 0) {
+                        const firstProg = state.f04Programs[0];
+                        state.timerMinutes = Math.floor(firstProg.time / 60);
+                        state.timerSeconds = firstProg.time % 60;
+                        state.timerTenths = 0;
+                        state.f04FirstBellFired = false;
+                    }
+                }
+            }
+            updateMonitor();
+        });
+
+        // F04 Timer Clear
+        document.getElementById('f04-timer-clear').addEventListener('click', () => {
+            state.timerMinutes = 0;
+            state.timerSeconds = 0;
+            state.timerTenths = 0;
+            updateMonitor();
+        });
+
+        // F04 Timer Show Tenths
+        document.getElementById('f04-timer-show-tenths').addEventListener('click', () => {
+            state.showTenths = !state.showTenths;
+            document.getElementById('f04-timer-show-tenths').classList.toggle('toggled', state.showTenths);
+            updateMonitor();
+        });
+
+        // F04 Timer +1m
+        document.getElementById('f04-timer-plus-1m').addEventListener('click', () => {
+            if (!state.f04ProgrammingMode && state.f04Programs.length === 0) {
+                // Enter programming mode
+                state.f04ProgrammingMode = true;
+                state.f04ProgramStep = 'time';
+                state.f04DisplayProgram = 1;
+            }
+            state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            updateMonitor();
+        });
+
+        // F04 Timer -1m
+        document.getElementById('f04-timer-minus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            updateMonitor();
+        });
+
+        // F04 Timer +1s
+        document.getElementById('f04-timer-plus-1s').addEventListener('click', () => {
+            if (!state.f04ProgrammingMode && state.f04Programs.length === 0) {
+                // Enter programming mode
+                state.f04ProgrammingMode = true;
+                state.f04ProgramStep = 'time';
+                state.f04DisplayProgram = 1;
+            }
+            state.timerSeconds++;
+            if (state.timerSeconds >= 60) {
+                state.timerSeconds = 0;
+                state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            }
+            updateMonitor();
+        });
+
+        // F04 Timer -1s
+        document.getElementById('f04-timer-minus-1s').addEventListener('click', () => {
+            state.timerSeconds--;
+            if (state.timerSeconds < 0) {
+                state.timerSeconds = 59;
+                state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            }
+            updateMonitor();
+        });
+
+        // F04 Timer Reset
+        document.getElementById('f04-timer-reset').addEventListener('click', () => {
+            if (state.f04MatchRunning) {
+                // During match: reset back to programming mode
+                if (f04TimerInterval) {
+                    clearInterval(f04TimerInterval);
+                    f04TimerInterval = null;
+                }
+                state.timerRunning = false;
+                state.f04MatchRunning = false;
+                state.f04ProgrammingMode = true;
+                state.f04ProgramStep = 'time';
+                state.f04DisplayProgram = 1;
+                state.f04CurrentRound = 1;
+                state.f04CurrentProgramIndex = 0;
+                state.f04Programs = [];
+                state.f04TotalRounds = 0;
+                state.f04FirstBellFired = false;
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+                document.getElementById('f04-timer-start-stop').classList.remove('toggled');
+            } else if (state.f04Programs.length > 0 && state.f04CurrentProgramIndex < state.f04Programs.length) {
+                const currentProg = state.f04Programs[state.f04CurrentProgramIndex];
+                state.timerMinutes = Math.floor(currentProg.time / 60);
+                state.timerSeconds = currentProg.time % 60;
+                state.timerTenths = 0;
+                state.f04FirstBellFired = false;
+            } else {
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+            }
+            updateMonitor();
+        });
+
+        // F04 Timer Start/Stop
+        document.getElementById('f04-timer-start-stop').addEventListener('click', () => {
+            if (state.f04ProgrammingMode) {
+                // Can't start during programming
+                return;
+            }
+
+            if (state.timerRunning) {
+                clearInterval(f04TimerInterval);
+                f04TimerInterval = null;
+                state.timerRunning = false;
+            } else {
+                if (state.f04Programs.length === 0) {
+                    // No programs set
+                    return;
+                }
+                state.timerRunning = true;
+                state.f04MatchRunning = true;
+                f04TimerInterval = setInterval(f04TimerTick, 100);
+            }
+            document.getElementById('f04-timer-start-stop').classList.toggle('toggled', state.timerRunning);
+            updateMonitor();
+        });
+
+        // =====================
+        // F05 Event Handlers (Wrestling)
+        // =====================
+
+        let f05TimerInterval = null;
+        let f05WoundLeftInterval = null;
+        let f05WoundRightInterval = null;
+
+        function f05TimerTick() {
+            if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
+                // Timer reached 0 - move to next program
+                clearInterval(f05TimerInterval);
+                f05TimerInterval = null;
+                state.timerRunning = false;
+                document.getElementById('f05-timer-start-stop').classList.remove('toggled');
+                playDoubleBuzzer();
+
+                // Move to next program
+                state.f05CurrentProgramIndex++;
+                if (state.f05CurrentProgramIndex < state.f05Programs.length) {
+                    const nextProg = state.f05Programs[state.f05CurrentProgramIndex];
+                    state.timerMinutes = Math.floor(nextProg.time / 60);
+                    state.timerSeconds = nextProg.time % 60;
+                    state.timerTenths = 0;
+                }
+            } else {
+                state.timerTenths--;
+                if (state.timerTenths < 0) {
+                    state.timerTenths = 9;
+                    state.timerSeconds--;
+                    if (state.timerSeconds < 0) {
+                        state.timerSeconds = 59;
+                        state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+                    }
+                }
+            }
+            updateMonitor();
+        }
+
+        function f05WoundLeftTick() {
+            state.f05WoundTimerLeft++;
+            // Check for interval buzzer
+            if (state.f05FirstBellInterval > 0 && state.f05WoundTimerLeft % state.f05FirstBellInterval === 0) {
+                if (state.f05WoundTimerLeft < state.f05WoundTimerPreset) {
+                    playBuzzer();
+                }
+            }
+            // Check if reached preset
+            if (state.f05WoundTimerLeft >= state.f05WoundTimerPreset) {
+                clearInterval(f05WoundLeftInterval);
+                f05WoundLeftInterval = null;
+                state.f05WoundTimerLeftRunning = false;
+                document.getElementById('f05-wound-left-start').classList.remove('toggled');
+                playDoubleBuzzer();
+            }
+            updateMonitor();
+        }
+
+        function f05WoundRightTick() {
+            state.f05WoundTimerRight++;
+            // Check for interval buzzer
+            if (state.f05FirstBellInterval > 0 && state.f05WoundTimerRight % state.f05FirstBellInterval === 0) {
+                if (state.f05WoundTimerRight < state.f05WoundTimerPreset) {
+                    playBuzzer();
+                }
+            }
+            // Check if reached preset
+            if (state.f05WoundTimerRight >= state.f05WoundTimerPreset) {
+                clearInterval(f05WoundRightInterval);
+                f05WoundRightInterval = null;
+                state.f05WoundTimerRightRunning = false;
+                document.getElementById('f05-wound-right-start').classList.remove('toggled');
+                playDoubleBuzzer();
+            }
+            updateMonitor();
+        }
+
+        // F05 Win Count L+1
+        document.getElementById('f05-win-left-plus').addEventListener('click', () => {
+            if (state.f05WinCountLeft === null) {
+                state.f05WinCountLeft = 0;
+            } else if (state.f05WinCountLeft >= 9) {
+                state.f05WinCountLeft = null;
+            } else {
+                state.f05WinCountLeft++;
+            }
+            updateMonitor();
+        });
+
+        // F05 Win Count R+1
+        document.getElementById('f05-win-right-plus').addEventListener('click', () => {
+            if (state.f05WinCountRight === null) {
+                state.f05WinCountRight = 0;
+            } else if (state.f05WinCountRight >= 9) {
+                state.f05WinCountRight = null;
+            } else {
+                state.f05WinCountRight++;
+            }
+            updateMonitor();
+        });
+
+        // F05 Win Count L-1
+        document.getElementById('f05-win-left-minus').addEventListener('click', () => {
+            if (state.f05WinCountLeft === null) {
+                state.f05WinCountLeft = 9;
+            } else if (state.f05WinCountLeft <= 0) {
+                state.f05WinCountLeft = null;
+            } else {
+                state.f05WinCountLeft--;
+            }
+            updateMonitor();
+        });
+
+        // F05 Win Count R-1
+        document.getElementById('f05-win-right-minus').addEventListener('click', () => {
+            if (state.f05WinCountRight === null) {
+                state.f05WinCountRight = 9;
+            } else if (state.f05WinCountRight <= 0) {
+                state.f05WinCountRight = null;
+            } else {
+                state.f05WinCountRight--;
+            }
+            updateMonitor();
+        });
+
+        // F05 Wound Timer +1s (for programming mode)
+        document.getElementById('f05-wound-plus-1s').addEventListener('click', () => {
+            if (state.f05ProgrammingStep === 'wound') {
+                state.f05WoundTimerPreset = Math.min(999, state.f05WoundTimerPreset + 1);
+            } else if (state.f05ProgrammingStep === 'bell') {
+                state.f05FirstBellInterval = Math.min(999, state.f05FirstBellInterval + 1);
+            }
+            updateMonitor();
+        });
+
+        // F05 Wound Timer -1s (for programming mode)
+        document.getElementById('f05-wound-minus-1s').addEventListener('click', () => {
+            if (state.f05ProgrammingStep === 'wound') {
+                state.f05WoundTimerPreset = Math.max(1, state.f05WoundTimerPreset - 1);
+            } else if (state.f05ProgrammingStep === 'bell') {
+                state.f05FirstBellInterval = Math.max(1, state.f05FirstBellInterval - 1);
+            }
+            updateMonitor();
+        });
+
+        // F05 Wound Left Start/Stop
+        document.getElementById('f05-wound-left-start').addEventListener('click', () => {
+            if (state.f05ProgrammingMode) return;
+
+            if (state.f05WoundTimerLeftRunning) {
+                // Stop wound timer
+                clearInterval(f05WoundLeftInterval);
+                f05WoundLeftInterval = null;
+                state.f05WoundTimerLeftRunning = false;
+            } else {
+                // Start wound timer - also stop main timer
+                if (state.timerRunning) {
+                    clearInterval(f05TimerInterval);
+                    f05TimerInterval = null;
+                    state.timerRunning = false;
+                    document.getElementById('f05-timer-start-stop').classList.remove('toggled');
+                }
+                state.f05WoundTimerLeft = 0;
+                state.f05WoundDisplayLeft = true;
+                state.f05WoundTimerLeftRunning = true;
+                f05WoundLeftInterval = setInterval(f05WoundLeftTick, 1000);
+            }
+            document.getElementById('f05-wound-left-start').classList.toggle('toggled', state.f05WoundTimerLeftRunning);
+            updateMonitor();
+        });
+
+        // F05 Wound Right Start/Stop
+        document.getElementById('f05-wound-right-start').addEventListener('click', () => {
+            if (state.f05ProgrammingMode) return;
+
+            if (state.f05WoundTimerRightRunning) {
+                // Stop wound timer
+                clearInterval(f05WoundRightInterval);
+                f05WoundRightInterval = null;
+                state.f05WoundTimerRightRunning = false;
+            } else {
+                // Start wound timer - also stop main timer
+                if (state.timerRunning) {
+                    clearInterval(f05TimerInterval);
+                    f05TimerInterval = null;
+                    state.timerRunning = false;
+                    document.getElementById('f05-timer-start-stop').classList.remove('toggled');
+                }
+                state.f05WoundTimerRight = 0;
+                state.f05WoundDisplayRight = true;
+                state.f05WoundTimerRightRunning = true;
+                f05WoundRightInterval = setInterval(f05WoundRightTick, 1000);
+            }
+            document.getElementById('f05-wound-right-start').classList.toggle('toggled', state.f05WoundTimerRightRunning);
+            updateMonitor();
+        });
+
+        // F05 Wound Reset - return to score display
+        document.getElementById('f05-wound-reset').addEventListener('click', () => {
+            if (f05WoundLeftInterval) {
+                clearInterval(f05WoundLeftInterval);
+                f05WoundLeftInterval = null;
+            }
+            if (f05WoundRightInterval) {
+                clearInterval(f05WoundRightInterval);
+                f05WoundRightInterval = null;
+            }
+            state.f05WoundTimerLeftRunning = false;
+            state.f05WoundTimerRightRunning = false;
+            state.f05WoundDisplayLeft = false;
+            state.f05WoundDisplayRight = false;
+            state.f05WoundTimerLeft = 0;
+            state.f05WoundTimerRight = 0;
+            document.getElementById('f05-wound-left-start').classList.remove('toggled');
+            document.getElementById('f05-wound-right-start').classList.remove('toggled');
+            updateMonitor();
+        });
+
+        // F05 Timer Clear
+        document.getElementById('f05-timer-clear').addEventListener('click', () => {
+            state.timerMinutes = 0;
+            state.timerSeconds = 0;
+            state.timerTenths = 0;
+            updateMonitor();
+        });
+
+        // F05 Timer Show Tenths
+        document.getElementById('f05-timer-show-tenths').addEventListener('click', () => {
+            state.showTenths = !state.showTenths;
+            document.getElementById('f05-timer-show-tenths').classList.toggle('toggled', state.showTenths);
+            updateMonitor();
+        });
+
+        // F05 Timer +1m
+        document.getElementById('f05-timer-plus-1m').addEventListener('click', () => {
+            if (!state.f05ProgrammingMode && state.f05Programs.length === 0) {
+                state.f05ProgrammingMode = true;
+                state.f05ProgrammingStep = 'time';
+                state.f05DisplayProgram = 1;
+            }
+            state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            updateMonitor();
+        });
+
+        // F05 Timer -1m
+        document.getElementById('f05-timer-minus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            updateMonitor();
+        });
+
+        // F05 Timer +1s
+        document.getElementById('f05-timer-plus-1s').addEventListener('click', () => {
+            if (!state.f05ProgrammingMode && state.f05Programs.length === 0) {
+                state.f05ProgrammingMode = true;
+                state.f05ProgrammingStep = 'time';
+                state.f05DisplayProgram = 1;
+            }
+            state.timerSeconds++;
+            if (state.timerSeconds >= 60) {
+                state.timerSeconds = 0;
+                state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            }
+            updateMonitor();
+        });
+
+        // F05 Timer -1s
+        document.getElementById('f05-timer-minus-1s').addEventListener('click', () => {
+            state.timerSeconds--;
+            if (state.timerSeconds < 0) {
+                state.timerSeconds = 59;
+                state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            }
+            updateMonitor();
+        });
+
+        // F05 Timer Reset (handles programming workflow)
+        document.getElementById('f05-timer-reset').addEventListener('click', () => {
+            if (state.f05MatchRunning) {
+                // During match - reset to programming mode
+                if (f05TimerInterval) {
+                    clearInterval(f05TimerInterval);
+                    f05TimerInterval = null;
+                }
+                state.timerRunning = false;
+                state.f05MatchRunning = false;
+                state.f05ProgrammingMode = true;
+                state.f05ProgrammingStep = 'time';
+                state.f05DisplayProgram = 1;
+                state.f05CurrentProgramIndex = 0;
+                state.f05Programs = [];
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+                document.getElementById('f05-timer-start-stop').classList.remove('toggled');
+            } else if (!state.f05ProgrammingMode) {
+                // Not in programming mode - reset all
+                state.f05Programs = [];
+                state.f05CurrentProgramIndex = 0;
+                state.f05DisplayProgram = 1;
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+            } else {
+                // In programming mode
+                const currentTimeSeconds = state.timerMinutes * 60 + state.timerSeconds;
+
+                if (state.f05ProgrammingStep === 'time') {
+                    if (currentTimeSeconds > 0) {
+                        // Save time and move to next program
+                        state.f05Programs.push({ time: currentTimeSeconds });
+                        state.f05DisplayProgram++;
+                        state.timerMinutes = 0;
+                        state.timerSeconds = 0;
+                        state.timerTenths = 0;
+                    } else {
+                        // Time is 0 - go to wound timer setting
+                        state.f05ProgrammingStep = 'wound';
+                    }
+                } else if (state.f05ProgrammingStep === 'wound') {
+                    // Move to bell interval setting
+                    state.f05ProgrammingStep = 'bell';
+                } else if (state.f05ProgrammingStep === 'bell') {
+                    // Exit programming mode
+                    state.f05ProgrammingMode = false;
+                    state.f05CurrentProgramIndex = 0;
+
+                    // Load first program
+                    if (state.f05Programs.length > 0) {
+                        const firstProg = state.f05Programs[0];
+                        state.timerMinutes = Math.floor(firstProg.time / 60);
+                        state.timerSeconds = firstProg.time % 60;
+                        state.timerTenths = 0;
+                    }
+                }
+            }
+            updateMonitor();
+        });
+
+        // F05 Timer Start/Stop
+        document.getElementById('f05-timer-start-stop').addEventListener('click', () => {
+            if (state.f05ProgrammingMode) return;
+
+            if (state.timerRunning) {
+                clearInterval(f05TimerInterval);
+                f05TimerInterval = null;
+                state.timerRunning = false;
+            } else {
+                if (state.f05Programs.length === 0) return;
+                state.timerRunning = true;
+                state.f05MatchRunning = true;
+                f05TimerInterval = setInterval(f05TimerTick, 100);
+            }
+            document.getElementById('f05-timer-start-stop').classList.toggle('toggled', state.timerRunning);
+            updateMonitor();
+        });
+
+        // F05 Score L+1
+        document.getElementById('f05-score-left-plus').addEventListener('click', () => {
+            state.f05ScoreLeft = Math.min(999, state.f05ScoreLeft + 1);
+            updateMonitor();
+        });
+
+        // F05 Score R+1
+        document.getElementById('f05-score-right-plus').addEventListener('click', () => {
+            state.f05ScoreRight = Math.min(999, state.f05ScoreRight + 1);
+            updateMonitor();
+        });
+
+        // F05 Score L-1
+        document.getElementById('f05-score-left-minus').addEventListener('click', () => {
+            state.f05ScoreLeft = Math.max(0, state.f05ScoreLeft - 1);
+            updateMonitor();
+        });
+
+        // F05 Score R-1
+        document.getElementById('f05-score-right-minus').addEventListener('click', () => {
+            state.f05ScoreRight = Math.max(0, state.f05ScoreRight - 1);
+            updateMonitor();
+        });
+
+        // F05 Score Reset
+        document.getElementById('f05-score-reset').addEventListener('click', () => {
+            state.f05ScoreLeft = 0;
+            state.f05ScoreRight = 0;
             updateMonitor();
         });
 
