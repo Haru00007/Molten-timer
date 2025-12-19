@@ -297,7 +297,8 @@
             f07ScoreFemale: 1,
             f07GoingRight: true,
             f07CountdownPhase: true,
-            f07DotCount: 0
+            f07DotCount: 0,
+            f07CurrentTime: 0.0
         };
 
         const timerDisplayEl = document.getElementById('timer-display');
@@ -648,14 +649,14 @@
                 }
 
                 if (state.f07CountdownPhase) {
-                    // Show countdown in red
-                    const mins = Math.floor(state.f07Countdown / 60);
-                    const secs = state.f07Countdown % 60;
-                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
-                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
-                    shotClockEl.innerHTML = `<span style="color:#d00">${mStr}:${sStr}</span>`;
+                    // Hide countdown during pre-countdown phase as requested
+                    shotClockEl.innerHTML = '';
                 } else {
-                    shotClockEl.innerHTML = `<span style="color:#fff">${shuttleTimeInt}.${shuttleTimeFrac}</span>`;
+                    // Show shuttle countdown in red during competition
+                    const displayTime = state.f07CurrentTime !== undefined ? state.f07CurrentTime : state.f07ShuttleTime;
+                    const cInt = Math.floor(displayTime);
+                    const cFrac = Math.floor((displayTime - cInt + 0.0001) * 10);
+                    shotClockEl.innerHTML = `<span style="color:#d00">${cInt}.${cFrac}</span>`;
                 }
 
                 scoreGuestEl.innerHTML = `<span style="color:#4af">${maleScore}</span><span style="color:orange">-</span><span style="color:#f66">${femaleScore}</span>`;

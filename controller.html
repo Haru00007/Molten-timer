@@ -795,7 +795,8 @@
             f07ScoreFemale: 1,            // 女子得点 (1-10, 11='A')
             f07GoingRight: true,          // 現在右に向かっているか
             f07CountdownPhase: true,      // カウントダウン中か
-            f07DotCount: 0                // ドット表示数 (0-8)
+            f07DotCount: 0,               // ドット表示数 (0-8)
+            f07CurrentTime: 0.0           // シャトル内カウントダウン用
         };
 
         let timerInterval = null;
@@ -807,6 +808,7 @@
         let f06TimerInterval = null;
         let f07Interval = null;
         let f07CountdownInterval = null;
+        let f07RunTimerInterval = null;
 
         function stopAllTimers() {
             if (timerInterval) clearInterval(timerInterval);
@@ -816,6 +818,7 @@
             if (f06TimerInterval) clearInterval(f06TimerInterval);
             if (f07Interval) clearTimeout(f07Interval);
             if (f07CountdownInterval) clearInterval(f07CountdownInterval);
+            if (f07RunTimerInterval) clearInterval(f07RunTimerInterval);
 
             timerInterval = null;
             shotClockInterval = null;
@@ -824,6 +827,7 @@
             f06TimerInterval = null;
             f07Interval = null;
             f07CountdownInterval = null;
+            f07RunTimerInterval = null;
 
             state.timerRunning = false;
             state.shotClockRunning = false;
@@ -1185,8 +1189,10 @@
                 monF07Level.textContent = state.f07Level;
 
                 // Shuttle time
-                const shuttleTimeInt = Math.floor(state.f07ShuttleTime);
-                const shuttleTimeFrac = Math.round((state.f07ShuttleTime - shuttleTimeInt) * 10);
+                // Shuttle time
+                const displayTime = state.f07CurrentTime;
+                const shuttleTimeInt = Math.floor(displayTime);
+                const shuttleTimeFrac = Math.floor((displayTime - shuttleTimeInt + 0.0001) * 10); // +epsilon for float issues
                 monF07ShuttleTime.textContent = `${shuttleTimeInt}.${shuttleTimeFrac}`;
 
                 // Scores
@@ -3114,6 +3120,13 @@
             state.f07ScoreFemale = f07GetFemaleScore(state.f07ShuttleCount);
         }
 
+        function f07RunTimerTick() {
+            if (state.f07Running && !state.f07CountdownPhase) {
+                state.f07CurrentTime = Math.max(0.0, state.f07CurrentTime - 0.1);
+                updateMonitor();
+            }
+        }
+
         function f07PlayNextNote() {
             const notes = state.f07GoingRight ? f07NotesRight : f07NotesLeft;
 
@@ -3139,11 +3152,13 @@
                     // Normal turnaround
                     playShuttleNote('CL');
                 }
-
                 // Switch direction
                 state.f07GoingRight = !state.f07GoingRight;
                 state.f07NotePosition = 0;
                 state.f07DotCount = 0; // Reset dots at turn
+
+                // Reset timer for next run
+                state.f07CurrentTime = state.f07ShuttleTime;
 
                 if (state.f07Level < 40) {
                     f07UpdateScores();
@@ -3211,6 +3226,7 @@
                     state.f07Level = 1;
                     const levelInfo = f07GetLevelInfo(1);
                     state.f07ShuttleTime = levelInfo.timeLimit;
+                    state.f07CurrentTime = levelInfo.timeLimit;
                     f07NoteIntervalMs = (state.f07ShuttleTime * 1000) / 9;
 
                     // Play Start Note (C) immediately
@@ -3218,18 +3234,8 @@
                     // So calling it now plays 1st note (C).
                     f07PlayNextNote();
 
-                    // We don't need playBuzzer() here because f07PlayNextNote plays C?
-                    // Or should we play Buzzer AND C? 
-                    // Usually Start is a Buzzer. Then pacing starts.
-                    // If I trigger buzzer here, it might overlap with C.
-                    // User says: "ド、レ、ミ...と音が鳴り出します". No mention of start buzzer, but usually implies start.
-                    // I'll keep the playBuzzer() here for "GO", and maybe delay f07PlayNextNote slightly? 
-                    // No, "ド" IS the start signal?
-                    // "Buzzer" for Level Up.
-                    // I will remove explicit playBuzzer() here and let the first Note (C) be the start signal.
-                    // Actually, let's keep it safe. Remove playBuzzer() to avoid "Double Sound" complaint.
-                    // Because user said "音が二重に聞こえます" (Sound is double).
-                    // Start C is clear enough.
+                    // Start run timer
+                    f07RunTimerInterval = setInterval(f07RunTimerTick, 100);
                 }
             }
             updateMonitor();
@@ -3293,8 +3299,8 @@
             updateMonitor();
         });
 
-        // F07 Reset
-        document.getElementById('f07-reset').addEventListener('click', () => {
+        // Helper to stop all F07 timers
+        function stopAllTimers() {
             if (f07CountdownInterval) {
                 clearInterval(f07CountdownInterval);
                 f07CountdownInterval = null;
@@ -3303,20 +3309,34 @@
                 clearTimeout(f07Interval);
                 f07Interval = null;
             }
+            if (f07RunTimerInterval) {
+                clearInterval(f07RunTimerInterval);
+                f07RunTimerInterval = null;
+            }
+        }
+
+        // F07 Reset
+        document.getElementById('f07-reset').addEventListener('click', () => {
+            stopAllTimers(); // Stop all timers
+
             state.f07Running = false;
             state.f07CountdownPhase = true;
             state.f07Countdown = 5;
             state.f07CountdownTenths = 0;
-            state.f07Direction = 'right';
-            state.f07Level = 1;
             state.f07ShuttleCount = 0;
             state.f07LevelShuttleCount = 0;
-            state.f07NotePosition = 0;
-            state.f07ShuttleTime = 9.0;
+            state.f07Level = 1;
             state.f07ScoreMale = 1;
             state.f07ScoreFemale = 1;
+            state.f07Direction = 'right';
             state.f07GoingRight = true;
+            state.f07NotePosition = 0;
             state.f07DotCount = 0;
+
+            const levelInfo = f07GetLevelInfo(1);
+            state.f07ShuttleTime = levelInfo.timeLimit;
+            state.f07CurrentTime = levelInfo.timeLimit;
+
             document.getElementById('f07-start-stop').classList.remove('toggled');
             updateMonitor();
         });
@@ -3325,14 +3345,7 @@
         document.getElementById('f07-start-stop').addEventListener('click', () => {
             if (state.f07Running) {
                 // Stop
-                if (f07CountdownInterval) {
-                    clearInterval(f07CountdownInterval);
-                    f07CountdownInterval = null;
-                }
-                if (f07Interval) {
-                    clearTimeout(f07Interval);
-                    f07Interval = null;
-                }
+                stopAllTimers(); // Stops intervals
                 state.f07Running = false;
             } else {
                 // Start
@@ -3340,12 +3353,15 @@
                 if (state.f07CountdownPhase) {
                     // Start countdown
                     state.f07CountdownTenths = 0;
+                    if (f07CountdownInterval) clearInterval(f07CountdownInterval);
                     f07CountdownInterval = setInterval(f07CountdownTick, 100);
                 } else {
                     // Resume note playing
-                    const levelInfo = f07GetLevelInfo(state.f07Level);
-                    f07NoteIntervalMs = (levelInfo.timeLimit * 1000) / 9;
-                    f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                    // We need to reschedule next note based on some logic, but for now simple resume logic:
+                    // Actually, standard shuttle run stop = game over usually?
+                    // Allowing resume:
+                    f07Interval = setTimeout(f07PlayNextNote, 100); // Resume quickly?
+                    f07RunTimerInterval = setInterval(f07RunTimerTick, 100);
                 }
             }
             document.getElementById('f07-start-stop').classList.toggle('toggled', state.f07Running);
