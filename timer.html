@@ -172,6 +172,7 @@
             <span id="dot-4" class="dot">.</span>
             <span id="dot-5" class="dot">.</span>
             <span id="dot-6" class="dot">.</span>
+            <span id="dot-7" class="dot">.</span>
             <span id="label-right" class="label-hg">G</span>
         </div>
 
@@ -313,7 +314,8 @@
             document.getElementById('dot-3'),
             document.getElementById('dot-4'),
             document.getElementById('dot-5'),
-            document.getElementById('dot-6')
+            document.getElementById('dot-6'),
+            document.getElementById('dot-7')
         ];
 
         // Firebase リアルタイム同期（BroadcastChannelの代わり）
@@ -602,7 +604,7 @@
                 }
 
                 // Middle row: | and dots visualization
-                // Using labelLeft/Right and dots for | . . . . . . . |
+                // Using labelLeft/Right and dots for | . . . . . . . | (7 dots)
                 const dotCount = state.f07DotCount;
                 // For going right: dots from left to right
                 // For going left: dots from right to left
@@ -611,10 +613,8 @@
                     labelLeftEl.textContent = dotCount > 0 ? '|' : '';
                     labelLeftEl.classList.toggle('active', dotCount > 0);
                     // Dots (1-7)
-                    for (let i = 0; i < 6; i++) {
-                        if (i < 6) {
-                            dots[i].classList.toggle('active', i < Math.min(dotCount, 7));
-                        }
+                    for (let i = 0; i < 7; i++) {
+                        dots[i].classList.toggle('active', i < Math.min(dotCount, 7));
                     }
                     // Right bar visible if dotCount >= 8
                     labelRightEl.textContent = dotCount >= 8 ? '|' : '';
@@ -623,22 +623,41 @@
                     // Going left - dots from right to left
                     labelRightEl.textContent = dotCount > 0 ? '|' : '';
                     labelRightEl.classList.toggle('active', dotCount > 0);
-                    for (let i = 0; i < 6; i++) {
-                        dots[5 - i].classList.toggle('active', i < Math.min(dotCount, 7));
+                    for (let i = 0; i < 7; i++) {
+                        dots[6 - i].classList.toggle('active', i < Math.min(dotCount, 7));
                     }
                     labelLeftEl.textContent = dotCount >= 8 ? '|' : '';
                     labelLeftEl.classList.toggle('active', dotCount >= 8);
                 }
 
                 // Bottom row: Level | Shuttle time | Score (male-female)
-                // Using scoreHome for composite display (level + time + score)
+                // Level: L!1 (orange L, orange !, white number)
+                let levelStr = String(state.f07Level);
+                if (state.f07Level < 10) levelStr = '!' + levelStr;
+
                 const shuttleTimeInt = Math.floor(state.f07ShuttleTime);
                 const shuttleTimeFrac = Math.round((state.f07ShuttleTime - shuttleTimeInt) * 10);
                 const maleScore = state.f07ScoreMale === 11 ? 'A' : state.f07ScoreMale;
                 const femaleScore = state.f07ScoreFemale === 11 ? 'A' : state.f07ScoreFemale;
 
-                scoreHomeEl.innerHTML = `<span style="color:#fff">L${state.f07Level}</span>`;
-                shotClockEl.innerHTML = `<span style="color:#fff">${shuttleTimeInt}.${shuttleTimeFrac}</span>`;
+                scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:${state.f07Level < 10 ? 'orange' : 'orange'}">${levelStr.replace('!', '!')}</span>`;
+                if (state.f07Level < 10) {
+                    scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:orange">!</span><span style="color:orange">${state.f07Level}</span>`;
+                } else {
+                    scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:orange">${state.f07Level}</span>`;
+                }
+
+                if (state.f07CountdownPhase) {
+                    // Show countdown in red
+                    const mins = Math.floor(state.f07Countdown / 60);
+                    const secs = state.f07Countdown % 60;
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    shotClockEl.innerHTML = `<span style="color:#d00">${mStr}:${sStr}</span>`;
+                } else {
+                    shotClockEl.innerHTML = `<span style="color:#fff">${shuttleTimeInt}.${shuttleTimeFrac}</span>`;
+                }
+
                 scoreGuestEl.innerHTML = `<span style="color:#4af">${maleScore}</span><span style="color:orange">-</span><span style="color:#f66">${femaleScore}</span>`;
             } else {
                 // F01 Mode: Basketball (original behavior)

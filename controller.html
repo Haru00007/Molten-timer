@@ -801,6 +801,40 @@
         let timerInterval = null;
         let shotClockInterval = null;
 
+        // F02/F03/F04/F05/F06/F07 Timer variables
+        let timeoutTimerInterval = null;
+        let osaekomiTimerInterval = null;
+        let f06TimerInterval = null;
+        let f07Interval = null;
+        let f07CountdownInterval = null;
+
+        function stopAllTimers() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (shotClockInterval) clearInterval(shotClockInterval);
+            if (timeoutTimerInterval) clearInterval(timeoutTimerInterval);
+            if (osaekomiTimerInterval) clearInterval(osaekomiTimerInterval);
+            if (f06TimerInterval) clearInterval(f06TimerInterval);
+            if (f07Interval) clearTimeout(f07Interval);
+            if (f07CountdownInterval) clearInterval(f07CountdownInterval);
+
+            timerInterval = null;
+            shotClockInterval = null;
+            timeoutTimerInterval = null;
+            osaekomiTimerInterval = null;
+            f06TimerInterval = null;
+            f07Interval = null;
+            f07CountdownInterval = null;
+
+            state.timerRunning = false;
+            state.shotClockRunning = false;
+            state.timeoutTimerRunning = false;
+            state.osaekomiTimerRunning = false;
+            state.f04MatchRunning = false;
+            state.f05MatchRunning = false;
+            state.f06MatchRunning = false;
+            state.f07Running = false;
+        }
+
         // Buzzer sound using Web Audio API
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let buzzerBuffer = null;
@@ -1582,6 +1616,7 @@
 
         // Change Function - shared logic
         function switchFunctionMode() {
+            stopAllTimers();
             currentFunctionIndex = (currentFunctionIndex + 1) % functionModes.length;
             const mode = functionModes[currentFunctionIndex];
             document.querySelector('h1').textContent = `${mode.code} ${mode.name}`;
@@ -1621,7 +1656,7 @@
         // F02 Event Handlers
         // =====================
 
-        let timeoutTimerInterval = null;
+
 
         function timeoutTimerTick() {
             state.timeoutTimerTenths--;
@@ -1815,7 +1850,7 @@
 
         let osaekomiInterval = null;
         let settingBlinkInterval = null;
-        let f03TimerInterval = null;
+
 
         function osaekomiTick() {
             state.osaekomiTimer++;
@@ -2092,7 +2127,7 @@
         // F04 Event Handlers (Boxing)
         // =====================
 
-        let f04TimerInterval = null;
+
 
         function f04TimerTick() {
             // Check for first bell
@@ -2376,7 +2411,7 @@
         // F05 Event Handlers (Wrestling)
         // =====================
 
-        let f05TimerInterval = null;
+
         let f05WoundLeftInterval = null;
         let f05WoundRightInterval = null;
 
@@ -2763,7 +2798,7 @@
         // F06 Event Handlers (Program Timer / Repeat)
         // =====================
 
-        let f06TimerInterval = null;
+
 
         function f06TimerTick() {
             if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
@@ -3048,8 +3083,8 @@
         const f07NotesRight = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
         const f07NotesLeft = ['CH', 'B', 'A', 'G', 'F', 'E', 'D', 'C', 'CL'];
 
-        let f07Interval = null;
-        let f07CountdownInterval = null;
+
+
         let f07NoteIntervalMs = 60000 / 60 / 9; // Default: 60 BPM, 9 notes per shuttle
 
         function f07GetMaleScore(count) {
@@ -3081,11 +3116,13 @@
 
         function f07PlayNextNote() {
             const notes = state.f07GoingRight ? f07NotesRight : f07NotesLeft;
-            const note = notes[state.f07NotePosition];
 
-            // Check if this is level up (CL position but level changing)
+            // Logic for 9 intervals (BPM compliant):
+            // Pos 0-7: Notes C-CH (Dots 1-8)
+            // Pos 8: Turnaround CL (Dot 0)
+
             if (state.f07NotePosition === 8) {
-                // End of shuttle - check level
+                // TURN (Time Limit Reached)
                 state.f07ShuttleCount++;
                 state.f07LevelShuttleCount++;
 
@@ -3106,23 +3143,30 @@
                 // Switch direction
                 state.f07GoingRight = !state.f07GoingRight;
                 state.f07NotePosition = 0;
-                state.f07DotCount = 0;
-                f07UpdateScores();
+                state.f07DotCount = 0; // Reset dots at turn
+
+                if (state.f07Level < 40) {
+                    f07UpdateScores();
+                    // Wait one interval before playing first note (C) of next run
+                    f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                }
             } else {
-                // Play the note
+                // Normal note playing (Pos 0 to 7)
+                const note = notes[state.f07NotePosition];
                 playShuttleNote(note);
+
+                state.f07DotCount = state.f07NotePosition + 1; // 0->1, 7->8
                 state.f07NotePosition++;
-                state.f07DotCount = state.f07NotePosition;
+
+                // Schedule next
+                f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
             }
 
-            // Reset shuttle time display for countdown
+            // Reset shuttle time display for countdown (display only, constant per level)
             const levelInfo = f07GetLevelInfo(state.f07Level);
             state.f07ShuttleTime = levelInfo.timeLimit;
 
             updateMonitor();
-
-            // Schedule next note
-            f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
         }
 
         function f07CountdownTick() {
@@ -3131,34 +3175,61 @@
                 state.f07CountdownTenths = 9;
                 state.f07Countdown--;
 
-                // Beep every second in last 5 seconds
-                if (state.f07Countdown >= 0 && state.f07Countdown < 5) {
+                // Beep every second in last 5 seconds (5, 4, 3, 2, 1)
+                // 5 -> Beep
+                // 1 -> Beep
+                // 0 -> Start
+                if (state.f07Countdown > 0 && state.f07Countdown <= 5) {
                     playBuzzer();
                 }
 
                 if (state.f07Countdown < 0) {
-                    // Countdown finished - start shuttle run
+                    // Countdown finished (at -1s mark essentially, after 0)
+                    // Or should start at 0?
+                    // Usually: 5 (beep), 4 (beep), 3 (beep), 2 (beep), 1 (beep), 0 (GO/Buzzer).
+                    // My logic: Countdown-- happens. 
+                    // If countdown was 1. Becomes 0.
+                    // Next tick: 0 -> -1.
+                    // So at 0, we should play GO buzzer?
+                    // Currently at >0 && <=5 plays beep. 
+                    // When it becomes 0, it doesn't play explicitly here?
+                    // Wait, if Countdown becomes 0.
+                    // Next tick (1s later), it becomes -1. Enter `if (state.f07Countdown < 0)`.
+                    // Plays `playBuzzer()` (Start buzzer). Correct.
+
                     clearInterval(f07CountdownInterval);
                     f07CountdownInterval = null;
                     state.f07CountdownPhase = false;
                     state.f07Countdown = 0;
 
-                    // Start with the first note
+                    // Start Setup
                     state.f07GoingRight = state.f07Direction === 'right';
                     state.f07NotePosition = 0;
-                    state.f07DotCount = 0;
-                    state.f07ShuttleCount = 0;
+                    state.f07DotCount = 1; // Start with 1st dot active?
+                    state.f07ShuttleCount = 0; // Starts at 0? Or 1? Usually "Start" is 0 distance.
                     state.f07LevelShuttleCount = 0;
                     state.f07Level = 1;
                     const levelInfo = f07GetLevelInfo(1);
                     state.f07ShuttleTime = levelInfo.timeLimit;
                     f07NoteIntervalMs = (state.f07ShuttleTime * 1000) / 9;
 
-                    // Play buzzer to start
-                    playBuzzer();
+                    // Play Start Note (C) immediately
+                    // The loop `f07PlayNextNote` plays note THEN schedules next.
+                    // So calling it now plays 1st note (C).
+                    f07PlayNextNote();
 
-                    // Start the note sequence
-                    f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                    // We don't need playBuzzer() here because f07PlayNextNote plays C?
+                    // Or should we play Buzzer AND C? 
+                    // Usually Start is a Buzzer. Then pacing starts.
+                    // If I trigger buzzer here, it might overlap with C.
+                    // User says: "ド、レ、ミ...と音が鳴り出します". No mention of start buzzer, but usually implies start.
+                    // I'll keep the playBuzzer() here for "GO", and maybe delay f07PlayNextNote slightly? 
+                    // No, "ド" IS the start signal?
+                    // "Buzzer" for Level Up.
+                    // I will remove explicit playBuzzer() here and let the first Note (C) be the start signal.
+                    // Actually, let's keep it safe. Remove playBuzzer() to avoid "Double Sound" complaint.
+                    // Because user said "音が二重に聞こえます" (Sound is double).
+                    // Start C is clear enough.
                 }
             }
             updateMonitor();
