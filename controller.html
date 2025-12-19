@@ -268,6 +268,38 @@
         </div>
     </div>
 
+    <!-- F06 Monitor (Program Timer / Repeat) -->
+    <div id="monitor-f06" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f06-timer" class="timer-display">0:00</span>
+        </div>
+        <div class="monitor-row">
+            <span id="mon-f06-repeat" class="score-display" style="min-width: 50px;">0</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f06-program" class="score-display" style="min-width: 60px;">P01</span>
+        </div>
+    </div>
+
+    <!-- F07 Monitor (Shuttle Run) -->
+    <div id="monitor-f07" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span id="mon-f07-dotcount" class="period-display mon-slot">0</span>
+            <span id="mon-f07-arrow-left" class="arrow-indicator mon-slot">&lt;</span>
+            <span id="mon-f07-count" class="timer-display">0:05</span>
+            <span id="mon-f07-arrow-right" class="arrow-indicator mon-slot">&gt;</span>
+        </div>
+        <div class="monitor-row">
+            <span class="mon-slot">L</span>
+            <span id="mon-f07-level" class="score-display" style="min-width: 30px;">1</span>
+            <span id="mon-f07-shuttletime" class="score-display" style="min-width: 40px;">9.0</span>
+            <span id="mon-f07-score-male" class="score-display" style="min-width: 20px; color: #4af;">1</span>
+            <span style="color: orange;">-</span>
+            <span id="mon-f07-score-female" class="score-display" style="min-width: 20px; color: #f66;">1</span>
+        </div>
+    </div>
+
     <!-- F01 Controls -->
     <div id="controls-f01" class="controls-container">
         <div class="control-section">
@@ -559,6 +591,75 @@
         </div>
     </div>
 
+    <!-- F06 Controls (Program Timer / Repeat) -->
+    <div id="controls-f06" class="controls-container" style="display: none;">
+        <div class="control-section">
+            <div class="section-title">Repeat counts</div>
+            <div class="button-row">
+                <button id="f06-repeat-plus" class="control-btn">+1</button>
+                <button id="f06-repeat-minus" class="control-btn">-1</button>
+            </div>
+        </div>
+
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f06-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Timer</div>
+            <div class="button-row">
+                <button id="f06-timer-clear" class="control-btn">Clear</button>
+                <button id="f06-timer-show-tenths" class="control-btn">1/10s</button>
+            </div>
+            <div class="button-row">
+                <button id="f06-timer-plus-1m" class="control-btn">+1m</button>
+                <button id="f06-timer-minus-1m" class="control-btn">-1m</button>
+                <button id="f06-timer-plus-1s" class="control-btn">+1s</button>
+                <button id="f06-timer-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f06-timer-reset" class="control-btn">Reset</button>
+                <button id="f06-timer-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- F07 Controls (Shuttle Run) -->
+    <div id="controls-f07" class="controls-container" style="display: none;">
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f07-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Shuttle Run</div>
+            <div class="button-row">
+                <button id="f07-plus-1m" class="control-btn">+1m</button>
+                <button id="f07-minus-1m" class="control-btn">-1m</button>
+            </div>
+            <div class="button-row">
+                <button id="f07-plus-1s" class="control-btn">+1s</button>
+                <button id="f07-minus-1s" class="control-btn">-1s</button>
+            </div>
+            <div class="button-row">
+                <button id="f07-plus-1step" class="control-btn full-width">+1step</button>
+            </div>
+            <div class="button-row">
+                <button id="f07-dir-left" class="control-btn">&lt;</button>
+                <button id="f07-dir-right" class="control-btn">&gt;</button>
+            </div>
+            <div class="button-row">
+                <button id="f07-reset" class="control-btn">Reset</button>
+                <button id="f07-start-stop" class="control-btn">Start/Stop</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -670,7 +771,31 @@
             f05WoundDisplayRight: false,
             f05MatchRunning: false,
             f05LastBellLeft: 0,           // 左の最後にブザー鳴らした秒数
-            f05LastBellRight: 0           // 右の最後にブザー鳴らした秒数
+            f05LastBellRight: 0,          // 右の最後にブザー鳴らした秒数
+            // F06 specific (Program Timer / Repeat)
+            f06Programs: [],              // [{time: 180}, ...]
+            f06RepeatCount: 0,            // 0=endless, 1-99=repeat count
+            f06CurrentRepeat: 1,          // 現在のリピート回数
+            f06CurrentProgramIndex: 0,
+            f06ProgrammingMode: false,
+            f06DisplayProgram: 1,
+            f06MatchRunning: false,
+            // F07 specific (Shuttle Run)
+            f07Countdown: 5,              // 開始前カウントダウン(秒)
+            f07CountdownTenths: 0,
+            f07Direction: 'right',        // 'left' or 'right'
+            f07Running: false,
+            f07Level: 1,                  // 現在レベル (1-40)
+            f07ShuttleCount: 0,           // 現在のシャトル数 (累計)
+            f07LevelShuttleCount: 0,      // レベル内シャトル数
+            f07NotePosition: 0,           // 現在の音符位置 (0-8: 0=CL切り返し後, 1-7=C~B, 8=CH)
+            f07ShuttleTime: 9.0,          // 現在のシャトル時間(秒)
+            f07ShuttleTimeTenths: 0,      // シャトル時間のテンス
+            f07ScoreMale: 1,              // 男子得点 (1-10, 11='A')
+            f07ScoreFemale: 1,            // 女子得点 (1-10, 11='A')
+            f07GoingRight: true,          // 現在右に向かっているか
+            f07CountdownPhase: true,      // カウントダウン中か
+            f07DotCount: 0                // ドット表示数 (0-8)
         };
 
         let timerInterval = null;
@@ -692,6 +817,38 @@
                 console.log('Buzzer loaded successfully');
             })
             .catch(err => console.error('Failed to load buzzer:', err));
+
+        // Shuttle run sounds
+        const shuttleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
+        const shuttleBuffers = {};
+
+        shuttleNotes.forEach(note => {
+            fetch(`./Sounds/shuttle/${note}.wav`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Shuttle note ${note} not found`);
+                    return response.arrayBuffer();
+                })
+                .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                .then(buffer => {
+                    shuttleBuffers[note] = buffer;
+                    console.log(`Shuttle note ${note} loaded`);
+                })
+                .catch(err => console.error(`Failed to load shuttle note ${note}:`, err));
+        });
+
+        function playShuttleNote(note) {
+            if (!shuttleBuffers[note]) {
+                console.error(`Shuttle note ${note} not loaded`);
+                return;
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            const source = audioContext.createBufferSource();
+            source.buffer = shuttleBuffers[note];
+            source.connect(audioContext.destination);
+            source.start(0);
+        }
 
         // Unlock AudioContext on first user interaction
         document.addEventListener('click', function unlockAudio() {
@@ -771,6 +928,21 @@
         const monF05ScoreLeft = document.getElementById('mon-f05-score-left');
         const monF05ScoreRight = document.getElementById('mon-f05-score-right');
         const monF05Winner = document.getElementById('mon-f05-winner');
+
+        // F06 Monitor elements
+        const monF06Timer = document.getElementById('mon-f06-timer');
+        const monF06Repeat = document.getElementById('mon-f06-repeat');
+        const monF06Program = document.getElementById('mon-f06-program');
+
+        // F07 Monitor elements
+        const monF07DotCount = document.getElementById('mon-f07-dotcount');
+        const monF07ArrowLeft = document.getElementById('mon-f07-arrow-left');
+        const monF07ArrowRight = document.getElementById('mon-f07-arrow-right');
+        const monF07Count = document.getElementById('mon-f07-count');
+        const monF07Level = document.getElementById('mon-f07-level');
+        const monF07ShuttleTime = document.getElementById('mon-f07-shuttletime');
+        const monF07ScoreMale = document.getElementById('mon-f07-score-male');
+        const monF07ScoreFemale = document.getElementById('mon-f07-score-female');
 
         const channel = new BroadcastChannel('basketball-timer');
 
@@ -922,6 +1094,70 @@
                     }
                     monF05Winner.textContent = winnerStr.trim() === '' ? '' : winnerStr;
                 }
+            } else if (state.functionMode === 'F06') {
+                // F06 Monitor update (Program Timer / Repeat)
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+                if (state.showTenths && mins === 0 && secs < 60) {
+                    const secsStr = secs < 10 ? ` ${secs}` : `${secs}`;
+                    monF06Timer.textContent = `${secsStr}.${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    monF06Timer.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Repeat count / Program display
+                if (state.f06ProgrammingMode) {
+                    monF06Repeat.textContent = state.f06RepeatCount;
+                    monF06Program.textContent = `P${String(state.f06DisplayProgram).padStart(2, '0')}`;
+                } else if (state.f06MatchRunning) {
+                    monF06Repeat.textContent = state.f06CurrentRepeat;
+                    monF06Program.textContent = `P${String(state.f06CurrentProgramIndex + 1).padStart(2, '0')}`;
+                } else {
+                    monF06Repeat.textContent = state.f06RepeatCount;
+                    monF06Program.textContent = `P${String(state.f06CurrentProgramIndex + 1).padStart(2, '0')}`;
+                }
+            } else if (state.functionMode === 'F07') {
+                // F07 Monitor update (Shuttle Run)
+                // Display countdown or shuttle count
+                if (state.f07CountdownPhase) {
+                    // Countdown display
+                    const mins = Math.floor(state.f07Countdown / 60);
+                    const secs = state.f07Countdown % 60;
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    monF07Count.textContent = `${mStr}:${sStr}`;
+                } else {
+                    // Shuttle count display
+                    monF07Count.textContent = state.f07ShuttleCount;
+                }
+
+                // Arrows based on direction and going direction
+                if (state.f07CountdownPhase) {
+                    // Before start: show intended direction
+                    monF07ArrowLeft.style.visibility = state.f07Direction === 'left' ? 'visible' : 'hidden';
+                    monF07ArrowRight.style.visibility = state.f07Direction === 'right' ? 'visible' : 'hidden';
+                } else {
+                    // During run: show current direction
+                    monF07ArrowLeft.style.visibility = !state.f07GoingRight ? 'visible' : 'hidden';
+                    monF07ArrowRight.style.visibility = state.f07GoingRight ? 'visible' : 'hidden';
+                }
+
+                // Dot count (note position indicator)
+                monF07DotCount.textContent = state.f07DotCount;
+
+                // Level
+                monF07Level.textContent = state.f07Level;
+
+                // Shuttle time
+                const shuttleTimeInt = Math.floor(state.f07ShuttleTime);
+                const shuttleTimeFrac = Math.round((state.f07ShuttleTime - shuttleTimeInt) * 10);
+                monF07ShuttleTime.textContent = `${shuttleTimeInt}.${shuttleTimeFrac}`;
+
+                // Scores
+                monF07ScoreMale.textContent = state.f07ScoreMale === 11 ? 'A' : state.f07ScoreMale;
+                monF07ScoreFemale.textContent = state.f07ScoreFemale === 11 ? 'A' : state.f07ScoreFemale;
             } else {
                 // F01 Monitor update (original behavior)
                 monPeriod.textContent = state.period === null ? ' ' : state.period;
@@ -1359,21 +1595,27 @@
             document.getElementById('monitor-f03').style.display = mode.code === 'F03' ? 'block' : 'none';
             document.getElementById('monitor-f04').style.display = mode.code === 'F04' ? 'block' : 'none';
             document.getElementById('monitor-f05').style.display = mode.code === 'F05' ? 'block' : 'none';
+            document.getElementById('monitor-f06').style.display = mode.code === 'F06' ? 'block' : 'none';
+            document.getElementById('monitor-f07').style.display = mode.code === 'F07' ? 'block' : 'none';
             document.getElementById('controls-f01').style.display = mode.code === 'F01' ? 'flex' : 'none';
             document.getElementById('controls-f02').style.display = mode.code === 'F02' ? 'flex' : 'none';
             document.getElementById('controls-f03').style.display = mode.code === 'F03' ? 'flex' : 'none';
             document.getElementById('controls-f04').style.display = mode.code === 'F04' ? 'flex' : 'none';
             document.getElementById('controls-f05').style.display = mode.code === 'F05' ? 'flex' : 'none';
+            document.getElementById('controls-f06').style.display = mode.code === 'F06' ? 'flex' : 'none';
+            document.getElementById('controls-f07').style.display = mode.code === 'F07' ? 'flex' : 'none';
 
             updateMonitor();
         }
 
-        // Change Function buttons (F01, F02, F03, F04, F05)
+        // Change Function buttons (F01, F02, F03, F04, F05, F06, F07)
         document.getElementById('change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f02-change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f03-change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f04-change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f05-change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f06-change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f07-change-function').addEventListener('click', switchFunctionMode);
 
         // =====================
         // F02 Event Handlers
@@ -2514,6 +2756,528 @@
         document.getElementById('f05-score-reset').addEventListener('click', () => {
             state.f05ScoreLeft = 0;
             state.f05ScoreRight = 0;
+            updateMonitor();
+        });
+
+        // =====================
+        // F06 Event Handlers (Program Timer / Repeat)
+        // =====================
+
+        let f06TimerInterval = null;
+
+        function f06TimerTick() {
+            if (state.timerMinutes === 0 && state.timerSeconds === 0 && state.timerTenths === 0) {
+                // Timer reached 0
+                playBuzzer();
+
+                // Move to next program
+                state.f06CurrentProgramIndex++;
+                if (state.f06CurrentProgramIndex >= state.f06Programs.length) {
+                    // All programs done - check repeat
+                    if (state.f06RepeatCount === 0) {
+                        // Endless repeat - start over
+                        state.f06CurrentProgramIndex = 0;
+                        const firstProg = state.f06Programs[0];
+                        state.timerMinutes = Math.floor(firstProg.time / 60);
+                        state.timerSeconds = firstProg.time % 60;
+                        state.timerTenths = 0;
+                    } else {
+                        state.f06CurrentRepeat++;
+                        if (state.f06CurrentRepeat > state.f06RepeatCount) {
+                            // All repeats complete - stop timer
+                            clearInterval(f06TimerInterval);
+                            f06TimerInterval = null;
+                            state.timerRunning = false;
+                            state.f06MatchRunning = false;
+                            state.f06CurrentRepeat = state.f06RepeatCount;
+                            state.f06CurrentProgramIndex = state.f06Programs.length - 1;
+                            document.getElementById('f06-timer-start-stop').classList.remove('toggled');
+                            playDoubleBuzzer();
+                        } else {
+                            // Start next repeat
+                            state.f06CurrentProgramIndex = 0;
+                            const firstProg = state.f06Programs[0];
+                            state.timerMinutes = Math.floor(firstProg.time / 60);
+                            state.timerSeconds = firstProg.time % 60;
+                            state.timerTenths = 0;
+                        }
+                    }
+                } else {
+                    // Load next program (timer keeps running)
+                    const nextProg = state.f06Programs[state.f06CurrentProgramIndex];
+                    state.timerMinutes = Math.floor(nextProg.time / 60);
+                    state.timerSeconds = nextProg.time % 60;
+                    state.timerTenths = 0;
+                }
+            } else {
+                state.timerTenths--;
+                if (state.timerTenths < 0) {
+                    state.timerTenths = 9;
+                    state.timerSeconds--;
+                    if (state.timerSeconds < 0) {
+                        state.timerSeconds = 59;
+                        state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+                    }
+                }
+            }
+            updateMonitor();
+        }
+
+        // F06 Repeat +1
+        document.getElementById('f06-repeat-plus').addEventListener('click', () => {
+            state.f06RepeatCount = Math.min(99, state.f06RepeatCount + 1);
+            updateMonitor();
+        });
+
+        // F06 Repeat -1
+        document.getElementById('f06-repeat-minus').addEventListener('click', () => {
+            state.f06RepeatCount = Math.max(0, state.f06RepeatCount - 1);
+            updateMonitor();
+        });
+
+        // F06 Timer Clear
+        document.getElementById('f06-timer-clear').addEventListener('click', () => {
+            state.timerMinutes = 0;
+            state.timerSeconds = 0;
+            state.timerTenths = 0;
+            updateMonitor();
+        });
+
+        // F06 Timer Show Tenths
+        document.getElementById('f06-timer-show-tenths').addEventListener('click', () => {
+            state.showTenths = !state.showTenths;
+            document.getElementById('f06-timer-show-tenths').classList.toggle('toggled', state.showTenths);
+            updateMonitor();
+        });
+
+        // F06 Timer +1m
+        document.getElementById('f06-timer-plus-1m').addEventListener('click', () => {
+            if (!state.f06ProgrammingMode && state.f06Programs.length === 0) {
+                state.f06ProgrammingMode = true;
+                state.f06DisplayProgram = 1;
+            }
+            state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            updateMonitor();
+        });
+
+        // F06 Timer -1m
+        document.getElementById('f06-timer-minus-1m').addEventListener('click', () => {
+            state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            updateMonitor();
+        });
+
+        // F06 Timer +1s
+        document.getElementById('f06-timer-plus-1s').addEventListener('click', () => {
+            if (!state.f06ProgrammingMode && state.f06Programs.length === 0) {
+                state.f06ProgrammingMode = true;
+                state.f06DisplayProgram = 1;
+            }
+            state.timerSeconds++;
+            if (state.timerSeconds >= 60) {
+                state.timerSeconds = 0;
+                state.timerMinutes = Math.min(99, state.timerMinutes + 1);
+            }
+            updateMonitor();
+        });
+
+        // F06 Timer -1s
+        document.getElementById('f06-timer-minus-1s').addEventListener('click', () => {
+            state.timerSeconds--;
+            if (state.timerSeconds < 0) {
+                state.timerSeconds = 59;
+                state.timerMinutes = Math.max(0, state.timerMinutes - 1);
+            }
+            updateMonitor();
+        });
+
+        // F06 Timer Reset (handles programming workflow)
+        document.getElementById('f06-timer-reset').addEventListener('click', () => {
+            if (state.f06MatchRunning) {
+                // During match - reset to programming mode
+                if (f06TimerInterval) {
+                    clearInterval(f06TimerInterval);
+                    f06TimerInterval = null;
+                }
+                state.timerRunning = false;
+                state.f06MatchRunning = false;
+                state.f06ProgrammingMode = true;
+                state.f06DisplayProgram = 1;
+                state.f06CurrentProgramIndex = 0;
+                state.f06CurrentRepeat = 1;
+                state.f06Programs = [];
+                state.f06RepeatCount = 0;
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+                document.getElementById('f06-timer-start-stop').classList.remove('toggled');
+            } else if (!state.f06ProgrammingMode) {
+                // Not in programming mode - reset all
+                state.f06Programs = [];
+                state.f06CurrentProgramIndex = 0;
+                state.f06CurrentRepeat = 1;
+                state.f06DisplayProgram = 1;
+                state.f06RepeatCount = 0;
+                state.timerMinutes = 0;
+                state.timerSeconds = 0;
+                state.timerTenths = 0;
+            } else {
+                // In programming mode
+                const currentTimeSeconds = state.timerMinutes * 60 + state.timerSeconds;
+
+                if (currentTimeSeconds > 0) {
+                    // Save time and move to next program
+                    state.f06Programs.push({ time: currentTimeSeconds });
+                    state.f06DisplayProgram++;
+                    state.timerMinutes = 0;
+                    state.timerSeconds = 0;
+                    state.timerTenths = 0;
+                } else {
+                    // Time is 0 - exit programming mode (ready to set repeat count)
+                    state.f06ProgrammingMode = false;
+                    state.f06CurrentProgramIndex = 0;
+                    state.f06CurrentRepeat = 1;
+
+                    // Load first program
+                    if (state.f06Programs.length > 0) {
+                        const firstProg = state.f06Programs[0];
+                        state.timerMinutes = Math.floor(firstProg.time / 60);
+                        state.timerSeconds = firstProg.time % 60;
+                        state.timerTenths = 0;
+                    }
+                }
+            }
+            updateMonitor();
+        });
+
+        // F06 Timer Start/Stop
+        document.getElementById('f06-timer-start-stop').addEventListener('click', () => {
+            if (state.f06ProgrammingMode) return;
+
+            if (state.timerRunning) {
+                clearInterval(f06TimerInterval);
+                f06TimerInterval = null;
+                state.timerRunning = false;
+            } else {
+                if (state.f06Programs.length === 0) return;
+                state.timerRunning = true;
+                state.f06MatchRunning = true;
+                state.f06CurrentRepeat = 1;
+                f06TimerInterval = setInterval(f06TimerTick, 100);
+            }
+            document.getElementById('f06-timer-start-stop').classList.toggle('toggled', state.timerRunning);
+            updateMonitor();
+        });
+
+        // =====================
+        // F07 Event Handlers (Shuttle Run)
+        // =====================
+
+        // Shuttle run level table (from shuttlerun.md)
+        const f07LevelTable = [
+            { level: 1, totalCount: 7, levelCount: 7, bpm: 60, timeLimit: 9 },
+            { level: 2, totalCount: 15, levelCount: 8, bpm: 67.5, timeLimit: 8 },
+            { level: 3, totalCount: 23, levelCount: 8, bpm: 71.25, timeLimit: 7.58 },
+            { level: 4, totalCount: 32, levelCount: 9, bpm: 75, timeLimit: 7.2 },
+            { level: 5, totalCount: 41, levelCount: 9, bpm: 78.75, timeLimit: 6.86 },
+            { level: 6, totalCount: 51, levelCount: 10, bpm: 82.5, timeLimit: 6.55 },
+            { level: 7, totalCount: 61, levelCount: 10, bpm: 86.25, timeLimit: 6.26 },
+            { level: 8, totalCount: 72, levelCount: 11, bpm: 90, timeLimit: 6 },
+            { level: 9, totalCount: 83, levelCount: 11, bpm: 93.75, timeLimit: 5.76 },
+            { level: 10, totalCount: 94, levelCount: 11, bpm: 97.5, timeLimit: 5.54 },
+            { level: 11, totalCount: 106, levelCount: 12, bpm: 101.25, timeLimit: 5.33 },
+            { level: 12, totalCount: 118, levelCount: 12, bpm: 105, timeLimit: 5.14 },
+            { level: 13, totalCount: 131, levelCount: 13, bpm: 108.75, timeLimit: 4.97 },
+            { level: 14, totalCount: 144, levelCount: 13, bpm: 112.5, timeLimit: 4.8 },
+            { level: 15, totalCount: 157, levelCount: 13, bpm: 116.25, timeLimit: 4.65 },
+            { level: 16, totalCount: 171, levelCount: 14, bpm: 120, timeLimit: 4.5 },
+            { level: 17, totalCount: 185, levelCount: 14, bpm: 123.75, timeLimit: 4.36 },
+            { level: 18, totalCount: 200, levelCount: 15, bpm: 127.5, timeLimit: 4.24 },
+            { level: 19, totalCount: 215, levelCount: 15, bpm: 131.25, timeLimit: 4.11 },
+            { level: 20, totalCount: 231, levelCount: 16, bpm: 135, timeLimit: 4 },
+            { level: 21, totalCount: 247, levelCount: 16, bpm: 138.75, timeLimit: 3.89 },
+            { level: 22, totalCount: 263, levelCount: 16, bpm: 142.5, timeLimit: 3.79 },
+            { level: 23, totalCount: 280, levelCount: 17, bpm: 146.25, timeLimit: 3.69 },
+            { level: 24, totalCount: 297, levelCount: 17, bpm: 150, timeLimit: 3.6 },
+            { level: 25, totalCount: 315, levelCount: 18, bpm: 153.75, timeLimit: 3.51 },
+            { level: 26, totalCount: 333, levelCount: 18, bpm: 157.5, timeLimit: 3.43 },
+            { level: 27, totalCount: 351, levelCount: 18, bpm: 161.25, timeLimit: 3.35 },
+            { level: 28, totalCount: 370, levelCount: 19, bpm: 165, timeLimit: 3.27 },
+            { level: 29, totalCount: 389, levelCount: 19, bpm: 168.75, timeLimit: 3.2 },
+            { level: 30, totalCount: 409, levelCount: 20, bpm: 172.5, timeLimit: 3.13 },
+            { level: 31, totalCount: 429, levelCount: 20, bpm: 176.25, timeLimit: 3.06 },
+            { level: 32, totalCount: 450, levelCount: 21, bpm: 180, timeLimit: 3 },
+            { level: 33, totalCount: 471, levelCount: 21, bpm: 183.75, timeLimit: 2.94 },
+            { level: 34, totalCount: 492, levelCount: 21, bpm: 187.5, timeLimit: 2.88 },
+            { level: 35, totalCount: 514, levelCount: 22, bpm: 191.25, timeLimit: 2.82 },
+            { level: 36, totalCount: 536, levelCount: 22, bpm: 195, timeLimit: 2.77 },
+            { level: 37, totalCount: 559, levelCount: 23, bpm: 198.75, timeLimit: 2.72 },
+            { level: 38, totalCount: 582, levelCount: 23, bpm: 202.5, timeLimit: 2.67 },
+            { level: 39, totalCount: 605, levelCount: 23, bpm: 206.25, timeLimit: 2.62 },
+            { level: 40, totalCount: 629, levelCount: 24, bpm: 210, timeLimit: 2.57 }
+        ];
+
+        // Score tables
+        const f07MaleScoreTable = [
+            { score: 10, minCount: 125 },
+            { score: 9, minCount: 113 },
+            { score: 8, minCount: 102 },
+            { score: 7, minCount: 90 },
+            { score: 6, minCount: 76 },
+            { score: 5, minCount: 63 },
+            { score: 4, minCount: 51 },
+            { score: 3, minCount: 37 },
+            { score: 2, minCount: 26 },
+            { score: 1, minCount: 0 }
+        ];
+
+        const f07FemaleScoreTable = [
+            { score: 10, minCount: 88 },
+            { score: 9, minCount: 76 },
+            { score: 8, minCount: 64 },
+            { score: 7, minCount: 54 },
+            { score: 6, minCount: 44 },
+            { score: 5, minCount: 35 },
+            { score: 4, minCount: 27 },
+            { score: 3, minCount: 21 },
+            { score: 2, minCount: 15 },
+            { score: 1, minCount: 0 }
+        ];
+
+        // Note sequence for going right: C->D->E->F->G->A->B->CH->CL (turnaround)
+        // Note sequence for going left: CH->B->A->G->F->E->D->C->CL (turnaround)
+        const f07NotesRight = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
+        const f07NotesLeft = ['CH', 'B', 'A', 'G', 'F', 'E', 'D', 'C', 'CL'];
+
+        let f07Interval = null;
+        let f07CountdownInterval = null;
+        let f07NoteIntervalMs = 60000 / 60 / 9; // Default: 60 BPM, 9 notes per shuttle
+
+        function f07GetMaleScore(count) {
+            for (let i = 0; i < f07MaleScoreTable.length; i++) {
+                if (count >= f07MaleScoreTable[i].minCount) {
+                    return f07MaleScoreTable[i].score === 10 ? 11 : f07MaleScoreTable[i].score;
+                }
+            }
+            return 1;
+        }
+
+        function f07GetFemaleScore(count) {
+            for (let i = 0; i < f07FemaleScoreTable.length; i++) {
+                if (count >= f07FemaleScoreTable[i].minCount) {
+                    return f07FemaleScoreTable[i].score === 10 ? 11 : f07FemaleScoreTable[i].score;
+                }
+            }
+            return 1;
+        }
+
+        function f07GetLevelInfo(level) {
+            return f07LevelTable.find(l => l.level === level) || f07LevelTable[0];
+        }
+
+        function f07UpdateScores() {
+            state.f07ScoreMale = f07GetMaleScore(state.f07ShuttleCount);
+            state.f07ScoreFemale = f07GetFemaleScore(state.f07ShuttleCount);
+        }
+
+        function f07PlayNextNote() {
+            const notes = state.f07GoingRight ? f07NotesRight : f07NotesLeft;
+            const note = notes[state.f07NotePosition];
+
+            // Check if this is level up (CL position but level changing)
+            if (state.f07NotePosition === 8) {
+                // End of shuttle - check level
+                state.f07ShuttleCount++;
+                state.f07LevelShuttleCount++;
+
+                const levelInfo = f07GetLevelInfo(state.f07Level);
+                if (state.f07ShuttleCount >= levelInfo.totalCount && state.f07Level < 40) {
+                    // Level up! Play buzzer instead of CL
+                    playBuzzer();
+                    state.f07Level++;
+                    state.f07LevelShuttleCount = 0;
+                    const newLevelInfo = f07GetLevelInfo(state.f07Level);
+                    state.f07ShuttleTime = newLevelInfo.timeLimit;
+                    f07NoteIntervalMs = (state.f07ShuttleTime * 1000) / 9;
+                } else {
+                    // Normal turnaround
+                    playShuttleNote('CL');
+                }
+
+                // Switch direction
+                state.f07GoingRight = !state.f07GoingRight;
+                state.f07NotePosition = 0;
+                state.f07DotCount = 0;
+                f07UpdateScores();
+            } else {
+                // Play the note
+                playShuttleNote(note);
+                state.f07NotePosition++;
+                state.f07DotCount = state.f07NotePosition;
+            }
+
+            // Reset shuttle time display for countdown
+            const levelInfo = f07GetLevelInfo(state.f07Level);
+            state.f07ShuttleTime = levelInfo.timeLimit;
+
+            updateMonitor();
+
+            // Schedule next note
+            f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+        }
+
+        function f07CountdownTick() {
+            state.f07CountdownTenths--;
+            if (state.f07CountdownTenths < 0) {
+                state.f07CountdownTenths = 9;
+                state.f07Countdown--;
+
+                // Beep every second in last 5 seconds
+                if (state.f07Countdown >= 0 && state.f07Countdown < 5) {
+                    playBuzzer();
+                }
+
+                if (state.f07Countdown < 0) {
+                    // Countdown finished - start shuttle run
+                    clearInterval(f07CountdownInterval);
+                    f07CountdownInterval = null;
+                    state.f07CountdownPhase = false;
+                    state.f07Countdown = 0;
+
+                    // Start with the first note
+                    state.f07GoingRight = state.f07Direction === 'right';
+                    state.f07NotePosition = 0;
+                    state.f07DotCount = 0;
+                    state.f07ShuttleCount = 0;
+                    state.f07LevelShuttleCount = 0;
+                    state.f07Level = 1;
+                    const levelInfo = f07GetLevelInfo(1);
+                    state.f07ShuttleTime = levelInfo.timeLimit;
+                    f07NoteIntervalMs = (state.f07ShuttleTime * 1000) / 9;
+
+                    // Play buzzer to start
+                    playBuzzer();
+
+                    // Start the note sequence
+                    f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                }
+            }
+            updateMonitor();
+        }
+
+        // F07 +1m
+        document.getElementById('f07-plus-1m').addEventListener('click', () => {
+            if (state.f07CountdownPhase && !state.f07Running) {
+                state.f07Countdown = Math.min(600, state.f07Countdown + 60);
+            }
+            updateMonitor();
+        });
+
+        // F07 -1m
+        document.getElementById('f07-minus-1m').addEventListener('click', () => {
+            if (state.f07CountdownPhase && !state.f07Running) {
+                state.f07Countdown = Math.max(0, state.f07Countdown - 60);
+            }
+            updateMonitor();
+        });
+
+        // F07 +1s
+        document.getElementById('f07-plus-1s').addEventListener('click', () => {
+            if (state.f07CountdownPhase && !state.f07Running) {
+                state.f07Countdown = Math.min(600, state.f07Countdown + 1);
+            }
+            updateMonitor();
+        });
+
+        // F07 -1s
+        document.getElementById('f07-minus-1s').addEventListener('click', () => {
+            if (state.f07CountdownPhase && !state.f07Running) {
+                state.f07Countdown = Math.max(0, state.f07Countdown - 1);
+            }
+            updateMonitor();
+        });
+
+        // F07 +1step (advance one note)
+        document.getElementById('f07-plus-1step').addEventListener('click', () => {
+            if (state.f07Running && !state.f07CountdownPhase) {
+                // Manual advance - play next note immediately
+                clearTimeout(f07Interval);
+                f07PlayNextNote();
+            }
+            updateMonitor();
+        });
+
+        // F07 Direction left
+        document.getElementById('f07-dir-left').addEventListener('click', () => {
+            if (state.f07CountdownPhase && !state.f07Running) {
+                state.f07Direction = 'left';
+            }
+            updateMonitor();
+        });
+
+        // F07 Direction right
+        document.getElementById('f07-dir-right').addEventListener('click', () => {
+            if (state.f07CountdownPhase && !state.f07Running) {
+                state.f07Direction = 'right';
+            }
+            updateMonitor();
+        });
+
+        // F07 Reset
+        document.getElementById('f07-reset').addEventListener('click', () => {
+            if (f07CountdownInterval) {
+                clearInterval(f07CountdownInterval);
+                f07CountdownInterval = null;
+            }
+            if (f07Interval) {
+                clearTimeout(f07Interval);
+                f07Interval = null;
+            }
+            state.f07Running = false;
+            state.f07CountdownPhase = true;
+            state.f07Countdown = 5;
+            state.f07CountdownTenths = 0;
+            state.f07Direction = 'right';
+            state.f07Level = 1;
+            state.f07ShuttleCount = 0;
+            state.f07LevelShuttleCount = 0;
+            state.f07NotePosition = 0;
+            state.f07ShuttleTime = 9.0;
+            state.f07ScoreMale = 1;
+            state.f07ScoreFemale = 1;
+            state.f07GoingRight = true;
+            state.f07DotCount = 0;
+            document.getElementById('f07-start-stop').classList.remove('toggled');
+            updateMonitor();
+        });
+
+        // F07 Start/Stop
+        document.getElementById('f07-start-stop').addEventListener('click', () => {
+            if (state.f07Running) {
+                // Stop
+                if (f07CountdownInterval) {
+                    clearInterval(f07CountdownInterval);
+                    f07CountdownInterval = null;
+                }
+                if (f07Interval) {
+                    clearTimeout(f07Interval);
+                    f07Interval = null;
+                }
+                state.f07Running = false;
+            } else {
+                // Start
+                state.f07Running = true;
+                if (state.f07CountdownPhase) {
+                    // Start countdown
+                    state.f07CountdownTenths = 0;
+                    f07CountdownInterval = setInterval(f07CountdownTick, 100);
+                } else {
+                    // Resume note playing
+                    const levelInfo = f07GetLevelInfo(state.f07Level);
+                    f07NoteIntervalMs = (levelInfo.timeLimit * 1000) / 9;
+                    f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                }
+            }
+            document.getElementById('f07-start-stop').classList.toggle('toggled', state.f07Running);
             updateMonitor();
         });
 

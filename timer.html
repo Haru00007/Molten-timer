@@ -272,7 +272,31 @@
             f05WoundDisplayRight: false,
             f05MatchRunning: false,
             f05LastBellLeft: 0,
-            f05LastBellRight: 0
+            f05LastBellRight: 0,
+            // F06 specific (Program Timer / Repeat)
+            f06Programs: [],
+            f06RepeatCount: 0,
+            f06CurrentRepeat: 1,
+            f06CurrentProgramIndex: 0,
+            f06ProgrammingMode: false,
+            f06DisplayProgram: 1,
+            f06MatchRunning: false,
+            // F07 specific (Shuttle Run)
+            f07Countdown: 5,
+            f07CountdownTenths: 0,
+            f07Direction: 'right',
+            f07Running: false,
+            f07Level: 1,
+            f07ShuttleCount: 0,
+            f07LevelShuttleCount: 0,
+            f07NotePosition: 0,
+            f07ShuttleTime: 9.0,
+            f07ShuttleTimeTenths: 0,
+            f07ScoreMale: 1,
+            f07ScoreFemale: 1,
+            f07GoingRight: true,
+            f07CountdownPhase: true,
+            f07DotCount: 0
         };
 
         const timerDisplayEl = document.getElementById('timer-display');
@@ -509,6 +533,113 @@
                     }
                     shotClockEl.textContent = winnerStr;
                 }
+            } else if (state.functionMode === 'F06') {
+                // F06 Mode: Program Timer / Repeat
+                // Top row: Timer
+                const mins = state.timerMinutes;
+                const secs = state.timerSeconds;
+
+                const isTenthsMode = state.showTenths && mins === 0 && secs < 60;
+                timerDisplayEl.classList.toggle('left-align', isTenthsMode);
+
+                if (isTenthsMode) {
+                    const secsStr = secs < 10 ? `!${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${secsStr}. ${state.timerTenths}`;
+                } else {
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${mStr}:${sStr}`;
+                }
+
+                // Hide arrows for F06
+                arrowLeftEl.classList.remove('active');
+                arrowRightEl.classList.remove('active');
+
+                // Middle row: Hide H/G labels and dots
+                labelLeftEl.textContent = '';
+                labelRightEl.textContent = '';
+                labelLeftEl.classList.remove('active');
+                labelRightEl.classList.remove('active');
+                dots.forEach((dot) => {
+                    dot.classList.remove('active');
+                });
+
+                // Bottom row: Repeat count (left), Program number (right)
+                if (state.f06ProgrammingMode) {
+                    scoreHomeEl.textContent = state.f06RepeatCount;
+                    scoreGuestEl.textContent = `P${String(state.f06DisplayProgram).padStart(2, '0')}`;
+                } else if (state.f06MatchRunning) {
+                    scoreHomeEl.textContent = state.f06CurrentRepeat;
+                    scoreGuestEl.textContent = `P${String(state.f06CurrentProgramIndex + 1).padStart(2, '0')}`;
+                } else {
+                    scoreHomeEl.textContent = state.f06RepeatCount;
+                    scoreGuestEl.textContent = `P${String(state.f06CurrentProgramIndex + 1).padStart(2, '0')}`;
+                }
+                shotClockEl.textContent = '';
+            } else if (state.functionMode === 'F07') {
+                // F07 Mode: Shuttle Run
+                timerDisplayEl.classList.remove('left-align');
+
+                // Top row: Countdown or shuttle count with arrows
+                if (state.f07CountdownPhase) {
+                    // Countdown display
+                    const mins = Math.floor(state.f07Countdown / 60);
+                    const secs = state.f07Countdown % 60;
+                    const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
+                    const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+                    timerDisplayEl.textContent = `${mStr}:${sStr}`;
+
+                    // Only right arrow or left arrow before start
+                    arrowLeftEl.classList.toggle('active', state.f07Direction === 'left');
+                    arrowRightEl.classList.toggle('active', state.f07Direction === 'right');
+                } else {
+                    // Shuttle count display
+                    timerDisplayEl.textContent = state.f07ShuttleCount;
+
+                    // Current direction arrow
+                    arrowLeftEl.classList.toggle('active', !state.f07GoingRight);
+                    arrowRightEl.classList.toggle('active', state.f07GoingRight);
+                }
+
+                // Middle row: | and dots visualization
+                // Using labelLeft/Right and dots for | . . . . . . . |
+                const dotCount = state.f07DotCount;
+                // For going right: dots from left to right
+                // For going left: dots from right to left
+                if (state.f07GoingRight || state.f07CountdownPhase) {
+                    // Left bar visible if dotCount > 0
+                    labelLeftEl.textContent = dotCount > 0 ? '|' : '';
+                    labelLeftEl.classList.toggle('active', dotCount > 0);
+                    // Dots (1-7)
+                    for (let i = 0; i < 6; i++) {
+                        if (i < 6) {
+                            dots[i].classList.toggle('active', i < Math.min(dotCount, 7));
+                        }
+                    }
+                    // Right bar visible if dotCount >= 8
+                    labelRightEl.textContent = dotCount >= 8 ? '|' : '';
+                    labelRightEl.classList.toggle('active', dotCount >= 8);
+                } else {
+                    // Going left - dots from right to left
+                    labelRightEl.textContent = dotCount > 0 ? '|' : '';
+                    labelRightEl.classList.toggle('active', dotCount > 0);
+                    for (let i = 0; i < 6; i++) {
+                        dots[5 - i].classList.toggle('active', i < Math.min(dotCount, 7));
+                    }
+                    labelLeftEl.textContent = dotCount >= 8 ? '|' : '';
+                    labelLeftEl.classList.toggle('active', dotCount >= 8);
+                }
+
+                // Bottom row: Level | Shuttle time | Score (male-female)
+                // Using scoreHome for composite display (level + time + score)
+                const shuttleTimeInt = Math.floor(state.f07ShuttleTime);
+                const shuttleTimeFrac = Math.round((state.f07ShuttleTime - shuttleTimeInt) * 10);
+                const maleScore = state.f07ScoreMale === 11 ? 'A' : state.f07ScoreMale;
+                const femaleScore = state.f07ScoreFemale === 11 ? 'A' : state.f07ScoreFemale;
+
+                scoreHomeEl.innerHTML = `<span style="color:#fff">L${state.f07Level}</span>`;
+                shotClockEl.innerHTML = `<span style="color:#fff">${shuttleTimeInt}.${shuttleTimeFrac}</span>`;
+                scoreGuestEl.innerHTML = `<span style="color:#4af">${maleScore}</span><span style="color:orange">-</span><span style="color:#f66">${femaleScore}</span>`;
             } else {
                 // F01 Mode: Basketball (original behavior)
                 const mins = state.timerMinutes;
