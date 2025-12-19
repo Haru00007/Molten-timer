@@ -809,6 +809,8 @@
         let f07Interval = null;
         let f07CountdownInterval = null;
         let f07RunTimerInterval = null;
+        let f07LastNoteTime = 0;
+        let f07RemainingTime = 0;
 
         function stopAllTimers() {
             if (timerInterval) clearInterval(timerInterval);
@@ -836,6 +838,8 @@
             state.f04MatchRunning = false;
             state.f05MatchRunning = false;
             state.f06MatchRunning = false;
+            // state.f07Running is handled by caller usually, but here we enforce false?
+            // stopAllTimers() generally sets running to false.
             state.f07Running = false;
         }
 
@@ -3130,9 +3134,7 @@
         function f07PlayNextNote() {
             const notes = state.f07GoingRight ? f07NotesRight : f07NotesLeft;
 
-            // Logic for 9 intervals (BPM compliant):
-            // Pos 0-7: Notes C-CH (Dots 1-8)
-            // Pos 8: Turnaround CL (Dot 0)
+            f07LastNoteTime = Date.now(); // Track time for pause logic
 
             if (state.f07NotePosition === 8) {
                 // TURN (Time Limit Reached)
@@ -3231,7 +3233,6 @@
 
                     // Play Start Note (C) immediately
                     // The loop `f07PlayNextNote` plays note THEN schedules next.
-                    // So calling it now plays 1st note (C).
                     f07PlayNextNote();
 
                     // Start run timer
@@ -3337,6 +3338,9 @@
             state.f07ShuttleTime = levelInfo.timeLimit;
             state.f07CurrentTime = levelInfo.timeLimit;
 
+            f07RemainingTime = 0;
+            f07LastNoteTime = 0;
+
             document.getElementById('f07-start-stop').classList.remove('toggled');
             updateMonitor();
         });
@@ -3344,7 +3348,11 @@
         // F07 Start/Stop
         document.getElementById('f07-start-stop').addEventListener('click', () => {
             if (state.f07Running) {
-                // Stop
+                // Stop - Calculate remaining time
+                if (f07LastNoteTime > 0) {
+                    const elapsed = Date.now() - f07LastNoteTime;
+                    f07RemainingTime = Math.max(0, f07NoteIntervalMs - elapsed);
+                }
                 stopAllTimers(); // Stops intervals
                 state.f07Running = false;
             } else {
@@ -3357,11 +3365,10 @@
                     f07CountdownInterval = setInterval(f07CountdownTick, 100);
                 } else {
                     // Resume note playing
-                    // We need to reschedule next note based on some logic, but for now simple resume logic:
-                    // Actually, standard shuttle run stop = game over usually?
-                    // Allowing resume:
-                    f07Interval = setTimeout(f07PlayNextNote, 100); // Resume quickly?
+                    const delay = f07RemainingTime > 0 ? f07RemainingTime : f07NoteIntervalMs;
+                    f07Interval = setTimeout(f07PlayNextNote, delay);
                     f07RunTimerInterval = setInterval(f07RunTimerTick, 100);
+                    f07RemainingTime = 0;
                 }
             }
             document.getElementById('f07-start-stop').classList.toggle('toggled', state.f07Running);
