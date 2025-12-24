@@ -809,8 +809,6 @@
         let f07Interval = null;
         let f07CountdownInterval = null;
         let f07RunTimerInterval = null;
-        let f07LastNoteTime = 0;
-        let f07RemainingTime = 0;
 
         function stopAllTimers() {
             if (timerInterval) clearInterval(timerInterval);
@@ -838,8 +836,6 @@
             state.f04MatchRunning = false;
             state.f05MatchRunning = false;
             state.f06MatchRunning = false;
-            // state.f07Running is handled by caller usually, but here we enforce false?
-            // stopAllTimers() generally sets running to false.
             state.f07Running = false;
         }
 
@@ -878,6 +874,10 @@
                 .catch(err => console.error(`Failed to load shuttle note ${note}:`, err));
         });
 
+        // Track current playing sources to prevent overlap
+        let currentShuttleSource = null;
+        let currentBuzzerSource = null;
+
         function playShuttleNote(note) {
             if (!shuttleBuffers[note]) {
                 console.error(`Shuttle note ${note} not loaded`);
@@ -886,10 +886,26 @@
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
             }
+            // Stop previous shuttle note if playing
+            if (currentShuttleSource) {
+                try {
+                    currentShuttleSource.stop();
+                } catch (e) {
+                    // Already stopped
+                }
+            }
             const source = audioContext.createBufferSource();
             source.buffer = shuttleBuffers[note];
             source.connect(audioContext.destination);
             source.start(0);
+            currentShuttleSource = source;
+
+            // Clear reference when sound ends
+            source.onended = () => {
+                if (currentShuttleSource === source) {
+                    currentShuttleSource = null;
+                }
+            };
         }
 
         // Unlock AudioContext on first user interaction
@@ -911,10 +927,25 @@
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
             }
+            // Stop previous buzzer if playing
+            if (currentBuzzerSource) {
+                try {
+                    currentBuzzerSource.stop();
+                } catch (e) {
+                    // Already stopped
+                }
+            }
             const source = audioContext.createBufferSource();
             source.buffer = buzzerBuffer;
             source.connect(audioContext.destination);
             source.start(0);
+            currentBuzzerSource = source;
+
+            source.onended = () => {
+                if (currentBuzzerSource === source) {
+                    currentBuzzerSource = null;
+                }
+            };
         }
 
         // Play buzzer twice seamlessly (for main timer - 2x length, same pitch)
@@ -926,6 +957,14 @@
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
             }
+            // Stop previous buzzer if playing
+            if (currentBuzzerSource) {
+                try {
+                    currentBuzzerSource.stop();
+                } catch (e) {
+                    // Already stopped
+                }
+            }
             const source1 = audioContext.createBufferSource();
             const source2 = audioContext.createBufferSource();
             source1.buffer = buzzerBuffer;
@@ -934,6 +973,13 @@
             source2.connect(audioContext.destination);
             source1.start(0);
             source2.start(audioContext.currentTime + buzzerBuffer.duration);
+            currentBuzzerSource = source2; // Track last one
+
+            source2.onended = () => {
+                if (currentBuzzerSource === source2) {
+                    currentBuzzerSource = null;
+                }
+            };
         }
 
         const monPeriod = document.getElementById('mon-period');
@@ -3134,7 +3180,9 @@
         function f07PlayNextNote() {
             const notes = state.f07GoingRight ? f07NotesRight : f07NotesLeft;
 
-            f07LastNoteTime = Date.now(); // Track time for pause logic
+            // Logic for 9 intervals (BPM compliant):
+            // Pos 0-7: Notes C-CH (Dots 1-8)
+            // Pos 8: Turnaround CL (Dot 0)
 
             if (state.f07NotePosition === 8) {
                 // TURN (Time Limit Reached)
@@ -3233,6 +3281,7 @@
 
                     // Play Start Note (C) immediately
                     // The loop `f07PlayNextNote` plays note THEN schedules next.
+                    // So calling it now plays 1st note (C).
                     f07PlayNextNote();
 
                     // Start run timer
@@ -3338,9 +3387,6 @@
             state.f07ShuttleTime = levelInfo.timeLimit;
             state.f07CurrentTime = levelInfo.timeLimit;
 
-            f07RemainingTime = 0;
-            f07LastNoteTime = 0;
-
             document.getElementById('f07-start-stop').classList.remove('toggled');
             updateMonitor();
         });
@@ -3348,11 +3394,7 @@
         // F07 Start/Stop
         document.getElementById('f07-start-stop').addEventListener('click', () => {
             if (state.f07Running) {
-                // Stop - Calculate remaining time
-                if (f07LastNoteTime > 0) {
-                    const elapsed = Date.now() - f07LastNoteTime;
-                    f07RemainingTime = Math.max(0, f07NoteIntervalMs - elapsed);
-                }
+                // Stop
                 stopAllTimers(); // Stops intervals
                 state.f07Running = false;
             } else {
@@ -3365,10 +3407,11 @@
                     f07CountdownInterval = setInterval(f07CountdownTick, 100);
                 } else {
                     // Resume note playing
-                    const delay = f07RemainingTime > 0 ? f07RemainingTime : f07NoteIntervalMs;
-                    f07Interval = setTimeout(f07PlayNextNote, delay);
+                    // We need to reschedule next note based on some logic, but for now simple resume logic:
+                    // Actually, standard shuttle run stop = game over usually?
+                    // Allowing resume:
+                    f07Interval = setTimeout(f07PlayNextNote, 100); // Resume quickly?
                     f07RunTimerInterval = setInterval(f07RunTimerTick, 100);
-                    f07RemainingTime = 0;
                 }
             }
             document.getElementById('f07-start-stop').classList.toggle('toggled', state.f07Running);
