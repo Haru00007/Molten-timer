@@ -282,21 +282,35 @@
         </div>
     </div>
 
-    <!-- F07 Monitor (Shuttle Run) -->
+    <!-- F07 Monitor (Pace Maker) -->
     <div id="monitor-f07" class="monitor" style="display: none;">
         <div class="monitor-row">
-            <span id="mon-f07-dotcount" class="period-display mon-slot">0</span>
-            <span id="mon-f07-arrow-left" class="arrow-indicator mon-slot">&lt;</span>
-            <span id="mon-f07-count" class="timer-display">0:05</span>
-            <span id="mon-f07-arrow-right" class="arrow-indicator mon-slot">&gt;</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f07-repeat" class="timer-display">0</span>
+        </div>
+        <div class="monitor-row">
+            <span id="mon-f07-tempo" class="score-display" style="min-width: 50px;">120</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span class="mon-slot">&nbsp;</span>
+            <span id="mon-f07-beats" class="score-display" style="min-width: 50px;">1</span>
+        </div>
+    </div>
+
+    <!-- F08 Monitor (Shuttle Run) -->
+    <div id="monitor-f08" class="monitor" style="display: none;">
+        <div class="monitor-row">
+            <span id="mon-f08-dotcount" class="period-display mon-slot">0</span>
+            <span id="mon-f08-arrow-left" class="arrow-indicator mon-slot">&lt;</span>
+            <span id="mon-f08-count" class="timer-display">0:05</span>
+            <span id="mon-f08-arrow-right" class="arrow-indicator mon-slot">&gt;</span>
         </div>
         <div class="monitor-row">
             <span class="mon-slot">L</span>
-            <span id="mon-f07-level" class="score-display" style="min-width: 30px;">1</span>
-            <span id="mon-f07-shuttletime" class="score-display" style="min-width: 40px;">9.0</span>
-            <span id="mon-f07-score-male" class="score-display" style="min-width: 20px; color: #4af;">1</span>
+            <span id="mon-f08-level" class="score-display" style="min-width: 30px;">1</span>
+            <span id="mon-f08-shuttletime" class="score-display" style="min-width: 40px;">9.0</span>
+            <span id="mon-f08-score-male" class="score-display" style="min-width: 20px; color: #4af;">1</span>
             <span style="color: orange;">-</span>
-            <span id="mon-f07-score-female" class="score-display" style="min-width: 20px; color: #f66;">1</span>
+            <span id="mon-f08-score-female" class="score-display" style="min-width: 20px; color: #f66;">1</span>
         </div>
     </div>
 
@@ -627,11 +641,43 @@
         </div>
     </div>
 
-    <!-- F07 Controls (Shuttle Run) -->
+    <!-- F07 Controls (Pace Maker) -->
     <div id="controls-f07" class="controls-container" style="display: none;">
+        <div class="control-section">
+            <div class="section-title">Tempo</div>
+            <div class="button-row">
+                <button id="f07-tempo-plus" class="control-btn">+1</button>
+                <button id="f07-tempo-minus" class="control-btn">-1</button>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Beats</div>
+            <div class="button-row">
+                <button id="f07-beats-plus" class="control-btn">+1</button>
+                <button id="f07-beats-minus" class="control-btn">-1</button>
+            </div>
+            <div class="button-row">
+                <button id="f07-start-stop" class="control-btn full-width">Start/Stop</button>
+            </div>
+            <div class="button-row">
+                <button id="f07-reset" class="control-btn full-width">Reset</button>
+            </div>
+        </div>
+
         <div class="control-section"
             style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
             <button id="f07-change-function" class="control-btn"
+                style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
+                Function</button>
+        </div>
+    </div>
+
+    <!-- F08 Controls (Shuttle Run) -->
+    <div id="controls-f08" class="controls-container" style="display: none;">
+        <div class="control-section"
+            style="display: flex; align-items: center; justify-content: center; min-width: 80px;">
+            <button id="f08-change-function" class="control-btn"
                 style="white-space: pre-line; line-height: 1.4; padding: 15px 12px;">Change
                 Function</button>
         </div>
@@ -639,23 +685,23 @@
         <div class="control-section">
             <div class="section-title">Shuttle Run</div>
             <div class="button-row">
-                <button id="f07-plus-1m" class="control-btn">+1m</button>
-                <button id="f07-minus-1m" class="control-btn">-1m</button>
+                <button id="f08-plus-1m" class="control-btn">+1m</button>
+                <button id="f08-minus-1m" class="control-btn">-1m</button>
             </div>
             <div class="button-row">
-                <button id="f07-plus-1s" class="control-btn">+1s</button>
-                <button id="f07-minus-1s" class="control-btn">-1s</button>
+                <button id="f08-plus-1s" class="control-btn">+1s</button>
+                <button id="f08-minus-1s" class="control-btn">-1s</button>
             </div>
             <div class="button-row">
-                <button id="f07-plus-1step" class="control-btn full-width">+1step</button>
+                <button id="f08-plus-1step" class="control-btn full-width">+1step</button>
             </div>
             <div class="button-row">
-                <button id="f07-dir-left" class="control-btn">&lt;</button>
-                <button id="f07-dir-right" class="control-btn">&gt;</button>
+                <button id="f08-dir-left" class="control-btn">&lt;</button>
+                <button id="f08-dir-right" class="control-btn">&gt;</button>
             </div>
             <div class="button-row">
-                <button id="f07-reset" class="control-btn">Reset</button>
-                <button id="f07-start-stop" class="control-btn">Start/Stop</button>
+                <button id="f08-reset" class="control-btn">Reset</button>
+                <button id="f08-start-stop" class="control-btn">Start/Stop</button>
             </div>
         </div>
     </div>
@@ -682,11 +728,8 @@
             { code: 'F05', name: 'Wrestling' },
             { code: 'F06', name: 'Program Timer' },
             { code: 'F07', name: 'Pace Maker' },
-            { code: 'F08', name: '20m Shuttle run' },
-            { code: 'F09', name: 'Stop Watch' },
-            { code: 'F10', name: 'Timer' },
-            { code: 'F11', name: 'Score Board' },
-            { code: 'F12', name: 'Clock' }
+            { code: 'F08', name: '20m Shuttle run' }
+            // F09-F12 未実装
         ];
         let currentFunctionIndex = 0;
 
@@ -780,35 +823,42 @@
             f06ProgrammingMode: false,
             f06DisplayProgram: 1,
             f06MatchRunning: false,
-            // F07 specific (Shuttle Run)
-            f07Countdown: 5,              // 開始前カウントダウン(秒)
-            f07CountdownTenths: 0,
-            f07Direction: 'right',        // 'left' or 'right'
+            // F07 specific (Pace Maker)
+            f07Tempo: 120,                // BPM (1-255)
+            f07Beats: 1,                  // 拍子 (1-9)
+            f07CurrentBeat: 0,            // 現在の拍 (0=停止, 1~beats=再生中)
+            f07RepeatCount: 0,            // 繰り返し回数
             f07Running: false,
-            f07Level: 1,                  // 現在レベル (1-40)
-            f07ShuttleCount: 0,           // 現在のシャトル数 (累計)
-            f07LevelShuttleCount: 0,      // レベル内シャトル数
-            f07NotePosition: 0,           // 現在の音符位置 (0-8: 0=CL切り返し後, 1-7=C~B, 8=CH)
-            f07ShuttleTime: 9.0,          // 現在のシャトル時間(秒)
-            f07ShuttleTimeTenths: 0,      // シャトル時間のテンス
-            f07ScoreMale: 1,              // 男子得点 (1-10, 11='A')
-            f07ScoreFemale: 1,            // 女子得点 (1-10, 11='A')
-            f07GoingRight: true,          // 現在右に向かっているか
-            f07CountdownPhase: true,      // カウントダウン中か
-            f07DotCount: 0,               // ドット表示数 (0-8)
-            f07CurrentTime: 0.0           // シャトル内カウントダウン用
+            // F08 specific (Shuttle Run)
+            f08Countdown: 5,              // 開始前カウントダウン(秒)
+            f08CountdownTenths: 0,
+            f08Direction: 'right',        // 'left' or 'right'
+            f08Running: false,
+            f08Level: 1,                  // 現在レベル (1-40)
+            f08ShuttleCount: 0,           // 現在のシャトル数 (累計)
+            f08LevelShuttleCount: 0,      // レベル内シャトル数
+            f08NotePosition: 0,           // 現在の音符位置 (0-8: 0=CL切り返し後, 1-7=C~B, 8=CH)
+            f08ShuttleTime: 9.0,          // 現在のシャトル時間(秒)
+            f08ShuttleTimeTenths: 0,      // シャトル時間のテンス
+            f08ScoreMale: 1,              // 男子得点 (1-10, 11='A')
+            f08ScoreFemale: 1,            // 女子得点 (1-10, 11='A')
+            f08GoingRight: true,          // 現在右に向かっているか
+            f08CountdownPhase: true,      // カウントダウン中か
+            f08DotCount: 0,               // ドット表示数 (0-8)
+            f08CurrentTime: 0.0           // シャトル内カウントダウン用
         };
 
         let timerInterval = null;
         let shotClockInterval = null;
 
-        // F02/F03/F04/F05/F06/F07 Timer variables
+        // F02/F03/F04/F05/F06/F08 Timer variables
         let timeoutTimerInterval = null;
         let osaekomiTimerInterval = null;
         let f06TimerInterval = null;
+        let f08Interval = null;
+        let f08CountdownInterval = null;
+        let f08RunTimerInterval = null;
         let f07Interval = null;
-        let f07CountdownInterval = null;
-        let f07RunTimerInterval = null;
 
         function stopAllTimers() {
             if (timerInterval) clearInterval(timerInterval);
@@ -816,18 +866,20 @@
             if (timeoutTimerInterval) clearInterval(timeoutTimerInterval);
             if (osaekomiTimerInterval) clearInterval(osaekomiTimerInterval);
             if (f06TimerInterval) clearInterval(f06TimerInterval);
-            if (f07Interval) clearTimeout(f07Interval);
-            if (f07CountdownInterval) clearInterval(f07CountdownInterval);
-            if (f07RunTimerInterval) clearInterval(f07RunTimerInterval);
+            if (f08Interval) clearTimeout(f08Interval);
+            if (f08CountdownInterval) clearInterval(f08CountdownInterval);
+            if (f08RunTimerInterval) clearInterval(f08RunTimerInterval);
+            if (f07Interval) clearInterval(f07Interval);
 
             timerInterval = null;
             shotClockInterval = null;
             timeoutTimerInterval = null;
             osaekomiTimerInterval = null;
             f06TimerInterval = null;
+            f08Interval = null;
+            f08CountdownInterval = null;
+            f08RunTimerInterval = null;
             f07Interval = null;
-            f07CountdownInterval = null;
-            f07RunTimerInterval = null;
 
             state.timerRunning = false;
             state.shotClockRunning = false;
@@ -836,6 +888,7 @@
             state.f04MatchRunning = false;
             state.f05MatchRunning = false;
             state.f06MatchRunning = false;
+            state.f08Running = false;
             state.f07Running = false;
         }
 
@@ -1022,15 +1075,20 @@
         const monF06Repeat = document.getElementById('mon-f06-repeat');
         const monF06Program = document.getElementById('mon-f06-program');
 
+        // F08 Monitor elements
+        const monF08DotCount = document.getElementById('mon-f08-dotcount');
+        const monF08ArrowLeft = document.getElementById('mon-f08-arrow-left');
+        const monF08ArrowRight = document.getElementById('mon-f08-arrow-right');
+        const monF08Count = document.getElementById('mon-f08-count');
+        const monF08Level = document.getElementById('mon-f08-level');
+        const monF08ShuttleTime = document.getElementById('mon-f08-shuttletime');
+        const monF08ScoreMale = document.getElementById('mon-f08-score-male');
+        const monF08ScoreFemale = document.getElementById('mon-f08-score-female');
+
         // F07 Monitor elements
-        const monF07DotCount = document.getElementById('mon-f07-dotcount');
-        const monF07ArrowLeft = document.getElementById('mon-f07-arrow-left');
-        const monF07ArrowRight = document.getElementById('mon-f07-arrow-right');
-        const monF07Count = document.getElementById('mon-f07-count');
-        const monF07Level = document.getElementById('mon-f07-level');
-        const monF07ShuttleTime = document.getElementById('mon-f07-shuttletime');
-        const monF07ScoreMale = document.getElementById('mon-f07-score-male');
-        const monF07ScoreFemale = document.getElementById('mon-f07-score-female');
+        const monF07Repeat = document.getElementById('mon-f07-repeat');
+        const monF07Tempo = document.getElementById('mon-f07-tempo');
+        const monF07Beats = document.getElementById('mon-f07-beats');
 
         const channel = new BroadcastChannel('basketball-timer');
 
@@ -1207,47 +1265,56 @@
                     monF06Program.textContent = `P${String(state.f06CurrentProgramIndex + 1).padStart(2, '0')}`;
                 }
             } else if (state.functionMode === 'F07') {
-                // F07 Monitor update (Shuttle Run)
+                // F07 Monitor update (Pace Maker)
+                monF07Repeat.textContent = state.f07RepeatCount;
+                monF07Tempo.textContent = state.f07Tempo;
+                if (state.f07Running) {
+                    monF07Beats.textContent = `${state.f07CurrentBeat}-${state.f07Beats}`;
+                } else {
+                    monF07Beats.textContent = state.f07Beats;
+                }
+            } else if (state.functionMode === 'F08') {
+                // F08 Monitor update (Shuttle Run)
                 // Display countdown or shuttle count
-                if (state.f07CountdownPhase) {
+                if (state.f08CountdownPhase) {
                     // Countdown display
-                    const mins = Math.floor(state.f07Countdown / 60);
-                    const secs = state.f07Countdown % 60;
+                    const mins = Math.floor(state.f08Countdown / 60);
+                    const secs = state.f08Countdown % 60;
                     const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
                     const sStr = secs < 10 ? `0${secs}` : `${secs}`;
-                    monF07Count.textContent = `${mStr}:${sStr}`;
+                    monF08Count.textContent = `${mStr}:${sStr}`;
                 } else {
                     // Shuttle count display
-                    monF07Count.textContent = state.f07ShuttleCount;
+                    monF08Count.textContent = state.f08ShuttleCount;
                 }
 
                 // Arrows based on direction and going direction
-                if (state.f07CountdownPhase) {
+                if (state.f08CountdownPhase) {
                     // Before start: show intended direction
-                    monF07ArrowLeft.style.visibility = state.f07Direction === 'left' ? 'visible' : 'hidden';
-                    monF07ArrowRight.style.visibility = state.f07Direction === 'right' ? 'visible' : 'hidden';
+                    monF08ArrowLeft.style.visibility = state.f08Direction === 'left' ? 'visible' : 'hidden';
+                    monF08ArrowRight.style.visibility = state.f08Direction === 'right' ? 'visible' : 'hidden';
                 } else {
                     // During run: show current direction
-                    monF07ArrowLeft.style.visibility = !state.f07GoingRight ? 'visible' : 'hidden';
-                    monF07ArrowRight.style.visibility = state.f07GoingRight ? 'visible' : 'hidden';
+                    monF08ArrowLeft.style.visibility = !state.f08GoingRight ? 'visible' : 'hidden';
+                    monF08ArrowRight.style.visibility = state.f08GoingRight ? 'visible' : 'hidden';
                 }
 
                 // Dot count (note position indicator)
-                monF07DotCount.textContent = state.f07DotCount;
+                monF08DotCount.textContent = state.f08DotCount;
 
                 // Level
-                monF07Level.textContent = state.f07Level;
+                monF08Level.textContent = state.f08Level;
 
                 // Shuttle time
                 // Shuttle time
-                const displayTime = state.f07CurrentTime;
+                const displayTime = state.f08CurrentTime;
                 const shuttleTimeInt = Math.floor(displayTime);
                 const shuttleTimeFrac = Math.floor((displayTime - shuttleTimeInt + 0.0001) * 10); // +epsilon for float issues
-                monF07ShuttleTime.textContent = `${shuttleTimeInt}.${shuttleTimeFrac}`;
+                monF08ShuttleTime.textContent = `${shuttleTimeInt}.${shuttleTimeFrac}`;
 
                 // Scores
-                monF07ScoreMale.textContent = state.f07ScoreMale === 11 ? 'A' : state.f07ScoreMale;
-                monF07ScoreFemale.textContent = state.f07ScoreFemale === 11 ? 'A' : state.f07ScoreFemale;
+                monF08ScoreMale.textContent = state.f08ScoreMale === 11 ? 'A' : state.f08ScoreMale;
+                monF08ScoreFemale.textContent = state.f08ScoreFemale === 11 ? 'A' : state.f08ScoreFemale;
             } else {
                 // F01 Monitor update (original behavior)
                 monPeriod.textContent = state.period === null ? ' ' : state.period;
@@ -1688,6 +1755,7 @@
             document.getElementById('monitor-f05').style.display = mode.code === 'F05' ? 'block' : 'none';
             document.getElementById('monitor-f06').style.display = mode.code === 'F06' ? 'block' : 'none';
             document.getElementById('monitor-f07').style.display = mode.code === 'F07' ? 'block' : 'none';
+            document.getElementById('monitor-f08').style.display = mode.code === 'F08' ? 'block' : 'none';
             document.getElementById('controls-f01').style.display = mode.code === 'F01' ? 'flex' : 'none';
             document.getElementById('controls-f02').style.display = mode.code === 'F02' ? 'flex' : 'none';
             document.getElementById('controls-f03').style.display = mode.code === 'F03' ? 'flex' : 'none';
@@ -1695,11 +1763,12 @@
             document.getElementById('controls-f05').style.display = mode.code === 'F05' ? 'flex' : 'none';
             document.getElementById('controls-f06').style.display = mode.code === 'F06' ? 'flex' : 'none';
             document.getElementById('controls-f07').style.display = mode.code === 'F07' ? 'flex' : 'none';
+            document.getElementById('controls-f08').style.display = mode.code === 'F08' ? 'flex' : 'none';
 
             updateMonitor();
         }
 
-        // Change Function buttons (F01, F02, F03, F04, F05, F06, F07)
+        // Change Function buttons (F01, F02, F03, F04, F05, F06, F08)
         document.getElementById('change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f02-change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f03-change-function').addEventListener('click', switchFunctionMode);
@@ -1707,6 +1776,7 @@
         document.getElementById('f05-change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f06-change-function').addEventListener('click', switchFunctionMode);
         document.getElementById('f07-change-function').addEventListener('click', switchFunctionMode);
+        document.getElementById('f08-change-function').addEventListener('click', switchFunctionMode);
 
         // =====================
         // F02 Event Handlers
@@ -2866,7 +2936,8 @@
                 if (state.f06CurrentProgramIndex >= state.f06Programs.length) {
                     // All programs done - check repeat
                     if (state.f06RepeatCount === 0) {
-                        // Endless repeat - start over
+                        // Endless repeat - start over and increment repeat counter
+                        state.f06CurrentRepeat = (state.f06CurrentRepeat + 1) % 1000; // 1-999 then 0
                         state.f06CurrentProgramIndex = 0;
                         const firstProg = state.f06Programs[0];
                         state.timerMinutes = Math.floor(firstProg.time / 60);
@@ -3060,11 +3131,98 @@
         });
 
         // =====================
-        // F07 Event Handlers (Shuttle Run)
+        // F07 Event Handlers (Pace Maker)
+        // =====================
+
+        function f07BeatTick() {
+            state.f07CurrentBeat++;
+            if (state.f07CurrentBeat > state.f07Beats) {
+                // Measure complete
+                state.f07RepeatCount = (state.f07RepeatCount + 1) % 10000;
+                state.f07CurrentBeat = 1;
+            }
+            // Play sound: CH for beat 1, CL for others
+            if (state.f07CurrentBeat === 1) {
+                playShuttleNote('CH');
+            } else {
+                playShuttleNote('CL');
+            }
+            updateMonitor();
+        }
+
+        // F07 Tempo +1
+        document.getElementById('f07-tempo-plus').addEventListener('click', () => {
+            if (!state.f07Running) {
+                state.f07Tempo = Math.min(255, state.f07Tempo + 1);
+            }
+            updateMonitor();
+        });
+
+        // F07 Tempo -1
+        document.getElementById('f07-tempo-minus').addEventListener('click', () => {
+            if (!state.f07Running) {
+                state.f07Tempo = Math.max(1, state.f07Tempo - 1);
+            }
+            updateMonitor();
+        });
+
+        // F07 Beats +1
+        document.getElementById('f07-beats-plus').addEventListener('click', () => {
+            if (!state.f07Running) {
+                state.f07Beats = Math.min(9, state.f07Beats + 1);
+            }
+            updateMonitor();
+        });
+
+        // F07 Beats -1
+        document.getElementById('f07-beats-minus').addEventListener('click', () => {
+            if (!state.f07Running) {
+                state.f07Beats = Math.max(1, state.f07Beats - 1);
+            }
+            updateMonitor();
+        });
+
+        // F07 Start/Stop
+        document.getElementById('f07-start-stop').addEventListener('click', () => {
+            if (state.f07Running) {
+                // Stop
+                if (f07Interval) {
+                    clearInterval(f07Interval);
+                    f07Interval = null;
+                }
+                state.f07Running = false;
+            } else {
+                // Start
+                state.f07Running = true;
+                state.f07CurrentBeat = 0;
+                const intervalMs = 60000 / state.f07Tempo;
+                // Play first beat immediately
+                f07BeatTick();
+                f07Interval = setInterval(f07BeatTick, intervalMs);
+            }
+            document.getElementById('f07-start-stop').classList.toggle('toggled', state.f07Running);
+            updateMonitor();
+        });
+
+        // F07 Reset
+        document.getElementById('f07-reset').addEventListener('click', () => {
+            if (f07Interval) {
+                clearInterval(f07Interval);
+                f07Interval = null;
+            }
+            state.f07Running = false;
+            state.f07CurrentBeat = 0;
+            state.f07RepeatCount = 0;
+            document.getElementById('f07-start-stop').classList.remove('toggled');
+            updateMonitor();
+        });
+
+        // =====================
+        // F08 Event Handlers (Shuttle Run)
         // =====================
 
         // Shuttle run level table (from shuttlerun.md)
-        const f07LevelTable = [
+        const f08LevelTable = [
             { level: 1, totalCount: 7, levelCount: 7, bpm: 60, timeLimit: 9 },
             { level: 2, totalCount: 15, levelCount: 8, bpm: 67.5, timeLimit: 8 },
             { level: 3, totalCount: 23, levelCount: 8, bpm: 71.25, timeLimit: 7.58 },
@@ -3108,7 +3266,7 @@
         ];
 
         // Score tables
-        const f07MaleScoreTable = [
+        const f08MaleScoreTable = [
             { score: 10, minCount: 125 },
             { score: 9, minCount: 113 },
             { score: 8, minCount: 102 },
@@ -3121,7 +3279,7 @@
             { score: 1, minCount: 0 }
         ];
 
-        const f07FemaleScoreTable = [
+        const f08FemaleScoreTable = [
             { score: 10, minCount: 88 },
             { score: 9, minCount: 76 },
             { score: 8, minCount: 64 },
@@ -3136,119 +3294,119 @@
 
         // Note sequence for going right: C->D->E->F->G->A->B->CH->CL (turnaround)
         // Note sequence for going left: CH->B->A->G->F->E->D->C->CL (turnaround)
-        const f07NotesRight = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
-        const f07NotesLeft = ['CH', 'B', 'A', 'G', 'F', 'E', 'D', 'C', 'CL'];
+        const f08NotesRight = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
+        const f08NotesLeft = ['CH', 'B', 'A', 'G', 'F', 'E', 'D', 'C', 'CL'];
 
 
 
-        let f07NoteIntervalMs = 60000 / 60 / 9; // Default: 60 BPM, 9 notes per shuttle
+        let f08NoteIntervalMs = 60000 / 60 / 9; // Default: 60 BPM, 9 notes per shuttle
 
-        function f07GetMaleScore(count) {
-            for (let i = 0; i < f07MaleScoreTable.length; i++) {
-                if (count >= f07MaleScoreTable[i].minCount) {
-                    return f07MaleScoreTable[i].score === 10 ? 11 : f07MaleScoreTable[i].score;
+        function f08GetMaleScore(count) {
+            for (let i = 0; i < f08MaleScoreTable.length; i++) {
+                if (count >= f08MaleScoreTable[i].minCount) {
+                    return f08MaleScoreTable[i].score === 10 ? 11 : f08MaleScoreTable[i].score;
                 }
             }
             return 1;
         }
 
-        function f07GetFemaleScore(count) {
-            for (let i = 0; i < f07FemaleScoreTable.length; i++) {
-                if (count >= f07FemaleScoreTable[i].minCount) {
-                    return f07FemaleScoreTable[i].score === 10 ? 11 : f07FemaleScoreTable[i].score;
+        function f08GetFemaleScore(count) {
+            for (let i = 0; i < f08FemaleScoreTable.length; i++) {
+                if (count >= f08FemaleScoreTable[i].minCount) {
+                    return f08FemaleScoreTable[i].score === 10 ? 11 : f08FemaleScoreTable[i].score;
                 }
             }
             return 1;
         }
 
-        function f07GetLevelInfo(level) {
-            return f07LevelTable.find(l => l.level === level) || f07LevelTable[0];
+        function f08GetLevelInfo(level) {
+            return f08LevelTable.find(l => l.level === level) || f08LevelTable[0];
         }
 
-        function f07UpdateScores() {
-            state.f07ScoreMale = f07GetMaleScore(state.f07ShuttleCount);
-            state.f07ScoreFemale = f07GetFemaleScore(state.f07ShuttleCount);
+        function f08UpdateScores() {
+            state.f08ScoreMale = f08GetMaleScore(state.f08ShuttleCount);
+            state.f08ScoreFemale = f08GetFemaleScore(state.f08ShuttleCount);
         }
 
-        function f07RunTimerTick() {
-            if (state.f07Running && !state.f07CountdownPhase) {
-                state.f07CurrentTime = Math.max(0.0, state.f07CurrentTime - 0.1);
+        function f08RunTimerTick() {
+            if (state.f08Running && !state.f08CountdownPhase) {
+                state.f08CurrentTime = Math.max(0.0, state.f08CurrentTime - 0.1);
                 updateMonitor();
             }
         }
 
-        function f07PlayNextNote() {
-            const notes = state.f07GoingRight ? f07NotesRight : f07NotesLeft;
+        function f08PlayNextNote() {
+            const notes = state.f08GoingRight ? f08NotesRight : f08NotesLeft;
 
             // Logic for 9 intervals (BPM compliant):
             // Pos 0-7: Notes C-CH (Dots 1-8)
             // Pos 8: Turnaround CL (Dot 0)
 
-            if (state.f07NotePosition === 8) {
+            if (state.f08NotePosition === 8) {
                 // TURN (Time Limit Reached)
-                state.f07ShuttleCount++;
-                state.f07LevelShuttleCount++;
+                state.f08ShuttleCount++;
+                state.f08LevelShuttleCount++;
 
-                const levelInfo = f07GetLevelInfo(state.f07Level);
-                if (state.f07ShuttleCount >= levelInfo.totalCount && state.f07Level < 40) {
+                const levelInfo = f08GetLevelInfo(state.f08Level);
+                if (state.f08ShuttleCount >= levelInfo.totalCount && state.f08Level < 40) {
                     // Level up! Play buzzer instead of CL
                     playBuzzer();
-                    state.f07Level++;
-                    state.f07LevelShuttleCount = 0;
-                    const newLevelInfo = f07GetLevelInfo(state.f07Level);
-                    state.f07ShuttleTime = newLevelInfo.timeLimit;
-                    f07NoteIntervalMs = (state.f07ShuttleTime * 1000) / 9;
+                    state.f08Level++;
+                    state.f08LevelShuttleCount = 0;
+                    const newLevelInfo = f08GetLevelInfo(state.f08Level);
+                    state.f08ShuttleTime = newLevelInfo.timeLimit;
+                    f08NoteIntervalMs = (state.f08ShuttleTime * 1000) / 9;
                 } else {
                     // Normal turnaround
                     playShuttleNote('CL');
                 }
                 // Switch direction
-                state.f07GoingRight = !state.f07GoingRight;
-                state.f07NotePosition = 0;
-                state.f07DotCount = 0; // Reset dots at turn
+                state.f08GoingRight = !state.f08GoingRight;
+                state.f08NotePosition = 0;
+                state.f08DotCount = 0; // Reset dots at turn
 
                 // Reset timer for next run
-                state.f07CurrentTime = state.f07ShuttleTime;
+                state.f08CurrentTime = state.f08ShuttleTime;
 
-                if (state.f07Level < 40) {
-                    f07UpdateScores();
+                if (state.f08Level < 40) {
+                    f08UpdateScores();
                     // Wait one interval before playing first note (C) of next run
-                    f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                    f08Interval = setTimeout(f08PlayNextNote, f08NoteIntervalMs);
                 }
             } else {
                 // Normal note playing (Pos 0 to 7)
-                const note = notes[state.f07NotePosition];
+                const note = notes[state.f08NotePosition];
                 playShuttleNote(note);
 
-                state.f07DotCount = state.f07NotePosition + 1; // 0->1, 7->8
-                state.f07NotePosition++;
+                state.f08DotCount = state.f08NotePosition + 1; // 0->1, 7->8
+                state.f08NotePosition++;
 
                 // Schedule next
-                f07Interval = setTimeout(f07PlayNextNote, f07NoteIntervalMs);
+                f08Interval = setTimeout(f08PlayNextNote, f08NoteIntervalMs);
             }
 
             // Reset shuttle time display for countdown (display only, constant per level)
-            const levelInfo = f07GetLevelInfo(state.f07Level);
-            state.f07ShuttleTime = levelInfo.timeLimit;
+            const levelInfo = f08GetLevelInfo(state.f08Level);
+            state.f08ShuttleTime = levelInfo.timeLimit;
 
             updateMonitor();
         }
 
-        function f07CountdownTick() {
-            state.f07CountdownTenths--;
-            if (state.f07CountdownTenths < 0) {
-                state.f07CountdownTenths = 9;
-                state.f07Countdown--;
+        function f08CountdownTick() {
+            state.f08CountdownTenths--;
+            if (state.f08CountdownTenths < 0) {
+                state.f08CountdownTenths = 9;
+                state.f08Countdown--;
 
                 // Beep every second in last 5 seconds (5, 4, 3, 2, 1)
                 // 5 -> Beep
                 // 1 -> Beep
                 // 0 -> Start
-                if (state.f07Countdown > 0 && state.f07Countdown <= 5) {
+                if (state.f08Countdown > 0 && state.f08Countdown <= 5) {
                     playBuzzer();
                 }
 
-                if (state.f07Countdown < 0) {
+                if (state.f08Countdown < 0) {
                     // Countdown finished (at -1s mark essentially, after 0)
                     // Or should start at 0?
                     // Usually: 5 (beep), 4 (beep), 3 (beep), 2 (beep), 1 (beep), 0 (GO/Buzzer).
@@ -3259,162 +3417,162 @@
                     // Currently at >0 && <=5 plays beep. 
                     // When it becomes 0, it doesn't play explicitly here?
                     // Wait, if Countdown becomes 0.
-                    // Next tick (1s later), it becomes -1. Enter `if (state.f07Countdown < 0)`.
+                    // Next tick (1s later), it becomes -1. Enter `if (state.f08Countdown < 0)`.
                     // Plays `playBuzzer()` (Start buzzer). Correct.
 
-                    clearInterval(f07CountdownInterval);
-                    f07CountdownInterval = null;
-                    state.f07CountdownPhase = false;
-                    state.f07Countdown = 0;
+                    clearInterval(f08CountdownInterval);
+                    f08CountdownInterval = null;
+                    state.f08CountdownPhase = false;
+                    state.f08Countdown = 0;
 
                     // Start Setup
-                    state.f07GoingRight = state.f07Direction === 'right';
-                    state.f07NotePosition = 0;
-                    state.f07DotCount = 1; // Start with 1st dot active?
-                    state.f07ShuttleCount = 0; // Starts at 0? Or 1? Usually "Start" is 0 distance.
-                    state.f07LevelShuttleCount = 0;
-                    state.f07Level = 1;
-                    const levelInfo = f07GetLevelInfo(1);
-                    state.f07ShuttleTime = levelInfo.timeLimit;
-                    state.f07CurrentTime = levelInfo.timeLimit;
-                    f07NoteIntervalMs = (state.f07ShuttleTime * 1000) / 9;
+                    state.f08GoingRight = state.f08Direction === 'right';
+                    state.f08NotePosition = 0;
+                    state.f08DotCount = 1; // Start with 1st dot active?
+                    state.f08ShuttleCount = 0; // Starts at 0? Or 1? Usually "Start" is 0 distance.
+                    state.f08LevelShuttleCount = 0;
+                    state.f08Level = 1;
+                    const levelInfo = f08GetLevelInfo(1);
+                    state.f08ShuttleTime = levelInfo.timeLimit;
+                    state.f08CurrentTime = levelInfo.timeLimit;
+                    f08NoteIntervalMs = (state.f08ShuttleTime * 1000) / 9;
 
                     // Play Start Note (C) immediately
-                    // The loop `f07PlayNextNote` plays note THEN schedules next.
+                    // The loop `f08PlayNextNote` plays note THEN schedules next.
                     // So calling it now plays 1st note (C).
-                    f07PlayNextNote();
+                    f08PlayNextNote();
 
                     // Start run timer
-                    f07RunTimerInterval = setInterval(f07RunTimerTick, 100);
+                    f08RunTimerInterval = setInterval(f08RunTimerTick, 100);
                 }
             }
             updateMonitor();
         }
 
-        // F07 +1m
-        document.getElementById('f07-plus-1m').addEventListener('click', () => {
-            if (state.f07CountdownPhase && !state.f07Running) {
-                state.f07Countdown = Math.min(600, state.f07Countdown + 60);
+        // F08 +1m
+        document.getElementById('f08-plus-1m').addEventListener('click', () => {
+            if (state.f08CountdownPhase && !state.f08Running) {
+                state.f08Countdown = Math.min(600, state.f08Countdown + 60);
             }
             updateMonitor();
         });
 
-        // F07 -1m
-        document.getElementById('f07-minus-1m').addEventListener('click', () => {
-            if (state.f07CountdownPhase && !state.f07Running) {
-                state.f07Countdown = Math.max(0, state.f07Countdown - 60);
+        // F08 -1m
+        document.getElementById('f08-minus-1m').addEventListener('click', () => {
+            if (state.f08CountdownPhase && !state.f08Running) {
+                state.f08Countdown = Math.max(0, state.f08Countdown - 60);
             }
             updateMonitor();
         });
 
-        // F07 +1s
-        document.getElementById('f07-plus-1s').addEventListener('click', () => {
-            if (state.f07CountdownPhase && !state.f07Running) {
-                state.f07Countdown = Math.min(600, state.f07Countdown + 1);
+        // F08 +1s
+        document.getElementById('f08-plus-1s').addEventListener('click', () => {
+            if (state.f08CountdownPhase && !state.f08Running) {
+                state.f08Countdown = Math.min(600, state.f08Countdown + 1);
             }
             updateMonitor();
         });
 
-        // F07 -1s
-        document.getElementById('f07-minus-1s').addEventListener('click', () => {
-            if (state.f07CountdownPhase && !state.f07Running) {
-                state.f07Countdown = Math.max(0, state.f07Countdown - 1);
+        // F08 -1s
+        document.getElementById('f08-minus-1s').addEventListener('click', () => {
+            if (state.f08CountdownPhase && !state.f08Running) {
+                state.f08Countdown = Math.max(0, state.f08Countdown - 1);
             }
             updateMonitor();
         });
 
-        // F07 +1step (advance one note)
-        document.getElementById('f07-plus-1step').addEventListener('click', () => {
-            if (state.f07Running && !state.f07CountdownPhase) {
+        // F08 +1step (advance one note)
+        document.getElementById('f08-plus-1step').addEventListener('click', () => {
+            if (state.f08Running && !state.f08CountdownPhase) {
                 // Manual advance - play next note immediately
-                clearTimeout(f07Interval);
-                f07PlayNextNote();
+                clearTimeout(f08Interval);
+                f08PlayNextNote();
             }
             updateMonitor();
         });
 
-        // F07 Direction left
-        document.getElementById('f07-dir-left').addEventListener('click', () => {
-            if (state.f07CountdownPhase && !state.f07Running) {
-                state.f07Direction = 'left';
+        // F08 Direction left
+        document.getElementById('f08-dir-left').addEventListener('click', () => {
+            if (state.f08CountdownPhase && !state.f08Running) {
+                state.f08Direction = 'left';
             }
             updateMonitor();
         });
 
-        // F07 Direction right
-        document.getElementById('f07-dir-right').addEventListener('click', () => {
-            if (state.f07CountdownPhase && !state.f07Running) {
-                state.f07Direction = 'right';
+        // F08 Direction right
+        document.getElementById('f08-dir-right').addEventListener('click', () => {
+            if (state.f08CountdownPhase && !state.f08Running) {
+                state.f08Direction = 'right';
             }
             updateMonitor();
         });
 
-        // Helper to stop all F07 timers
+        // Helper to stop all F08 timers
         function stopAllTimers() {
-            if (f07CountdownInterval) {
-                clearInterval(f07CountdownInterval);
-                f07CountdownInterval = null;
+            if (f08CountdownInterval) {
+                clearInterval(f08CountdownInterval);
+                f08CountdownInterval = null;
             }
-            if (f07Interval) {
-                clearTimeout(f07Interval);
-                f07Interval = null;
+            if (f08Interval) {
+                clearTimeout(f08Interval);
+                f08Interval = null;
             }
-            if (f07RunTimerInterval) {
-                clearInterval(f07RunTimerInterval);
-                f07RunTimerInterval = null;
+            if (f08RunTimerInterval) {
+                clearInterval(f08RunTimerInterval);
+                f08RunTimerInterval = null;
             }
         }
 
-        // F07 Reset
-        document.getElementById('f07-reset').addEventListener('click', () => {
+        // F08 Reset
+        document.getElementById('f08-reset').addEventListener('click', () => {
             stopAllTimers(); // Stop all timers
 
-            state.f07Running = false;
-            state.f07CountdownPhase = true;
-            state.f07Countdown = 5;
-            state.f07CountdownTenths = 0;
-            state.f07ShuttleCount = 0;
-            state.f07LevelShuttleCount = 0;
-            state.f07Level = 1;
-            state.f07ScoreMale = 1;
-            state.f07ScoreFemale = 1;
-            state.f07Direction = 'right';
-            state.f07GoingRight = true;
-            state.f07NotePosition = 0;
-            state.f07DotCount = 0;
+            state.f08Running = false;
+            state.f08CountdownPhase = true;
+            state.f08Countdown = 5;
+            state.f08CountdownTenths = 0;
+            state.f08ShuttleCount = 0;
+            state.f08LevelShuttleCount = 0;
+            state.f08Level = 1;
+            state.f08ScoreMale = 1;
+            state.f08ScoreFemale = 1;
+            state.f08Direction = 'right';
+            state.f08GoingRight = true;
+            state.f08NotePosition = 0;
+            state.f08DotCount = 0;
 
-            const levelInfo = f07GetLevelInfo(1);
-            state.f07ShuttleTime = levelInfo.timeLimit;
-            state.f07CurrentTime = levelInfo.timeLimit;
+            const levelInfo = f08GetLevelInfo(1);
+            state.f08ShuttleTime = levelInfo.timeLimit;
+            state.f08CurrentTime = levelInfo.timeLimit;
 
-            document.getElementById('f07-start-stop').classList.remove('toggled');
+            document.getElementById('f08-start-stop').classList.remove('toggled');
             updateMonitor();
         });
 
-        // F07 Start/Stop
-        document.getElementById('f07-start-stop').addEventListener('click', () => {
-            if (state.f07Running) {
+        // F08 Start/Stop
+        document.getElementById('f08-start-stop').addEventListener('click', () => {
+            if (state.f08Running) {
                 // Stop
                 stopAllTimers(); // Stops intervals
-                state.f07Running = false;
+                state.f08Running = false;
             } else {
                 // Start
-                state.f07Running = true;
-                if (state.f07CountdownPhase) {
+                state.f08Running = true;
+                if (state.f08CountdownPhase) {
                     // Start countdown
-                    state.f07CountdownTenths = 0;
-                    if (f07CountdownInterval) clearInterval(f07CountdownInterval);
-                    f07CountdownInterval = setInterval(f07CountdownTick, 100);
+                    state.f08CountdownTenths = 0;
+                    if (f08CountdownInterval) clearInterval(f08CountdownInterval);
+                    f08CountdownInterval = setInterval(f08CountdownTick, 100);
                 } else {
                     // Resume note playing
                     // We need to reschedule next note based on some logic, but for now simple resume logic:
                     // Actually, standard shuttle run stop = game over usually?
                     // Allowing resume:
-                    f07Interval = setTimeout(f07PlayNextNote, 100); // Resume quickly?
-                    f07RunTimerInterval = setInterval(f07RunTimerTick, 100);
+                    f08Interval = setTimeout(f08PlayNextNote, 100); // Resume quickly?
+                    f08RunTimerInterval = setInterval(f08RunTimerTick, 100);
                 }
             }
-            document.getElementById('f07-start-stop').classList.toggle('toggled', state.f07Running);
+            document.getElementById('f08-start-stop').classList.toggle('toggled', state.f08Running);
             updateMonitor();
         });
 

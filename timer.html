@@ -282,23 +282,29 @@
             f06ProgrammingMode: false,
             f06DisplayProgram: 1,
             f06MatchRunning: false,
-            // F07 specific (Shuttle Run)
-            f07Countdown: 5,
-            f07CountdownTenths: 0,
-            f07Direction: 'right',
+            // F07 specific (Pace Maker)
+            f07Tempo: 120,
+            f07Beats: 1,
+            f07CurrentBeat: 0,
+            f07RepeatCount: 0,
             f07Running: false,
-            f07Level: 1,
-            f07ShuttleCount: 0,
-            f07LevelShuttleCount: 0,
-            f07NotePosition: 0,
-            f07ShuttleTime: 9.0,
-            f07ShuttleTimeTenths: 0,
-            f07ScoreMale: 1,
-            f07ScoreFemale: 1,
-            f07GoingRight: true,
-            f07CountdownPhase: true,
-            f07DotCount: 0,
-            f07CurrentTime: 0.0
+            // F08 specific (Shuttle Run)
+            f08Countdown: 5,
+            f08CountdownTenths: 0,
+            f08Direction: 'right',
+            f08Running: false,
+            f08Level: 1,
+            f08ShuttleCount: 0,
+            f08LevelShuttleCount: 0,
+            f08NotePosition: 0,
+            f08ShuttleTime: 9.0,
+            f08ShuttleTimeTenths: 0,
+            f08ScoreMale: 1,
+            f08ScoreFemale: 1,
+            f08GoingRight: true,
+            f08CountdownPhase: true,
+            f08DotCount: 0,
+            f08CurrentTime: 0.0
         };
 
         const timerDisplayEl = document.getElementById('timer-display');
@@ -580,36 +586,58 @@
                 }
                 shotClockEl.textContent = '';
             } else if (state.functionMode === 'F07') {
-                // F07 Mode: Shuttle Run
+                // F07 Mode: Pace Maker
+                timerDisplayEl.classList.remove('left-align');
+
+                // Top row: repeat count
+                timerDisplayEl.textContent = state.f07RepeatCount;
+
+                // Hide arrows and dots
+                arrowLeftEl.classList.remove('active');
+                arrowRightEl.classList.remove('active');
+                dots.forEach(d => d.classList.remove('active'));
+                labelLeftEl.textContent = '';
+                labelRightEl.textContent = '';
+
+                // Bottom row: tempo (left), beats (right)
+                scoreHomeEl.textContent = state.f07Tempo;
+                if (state.f07Running) {
+                    scoreGuestEl.textContent = `${state.f07CurrentBeat}-${state.f07Beats}`;
+                } else {
+                    scoreGuestEl.textContent = state.f07Beats;
+                }
+                shotClockEl.textContent = '';
+            } else if (state.functionMode === 'F08') {
+                // F08 Mode: Shuttle Run
                 timerDisplayEl.classList.remove('left-align');
 
                 // Top row: Countdown or shuttle count with arrows
-                if (state.f07CountdownPhase) {
+                if (state.f08CountdownPhase) {
                     // Countdown display
-                    const mins = Math.floor(state.f07Countdown / 60);
-                    const secs = state.f07Countdown % 60;
+                    const mins = Math.floor(state.f08Countdown / 60);
+                    const secs = state.f08Countdown % 60;
                     const mStr = mins < 10 ? ` ${mins}` : `${mins}`;
                     const sStr = secs < 10 ? `0${secs}` : `${secs}`;
                     timerDisplayEl.textContent = `${mStr}:${sStr}`;
 
                     // Only right arrow or left arrow before start
-                    arrowLeftEl.classList.toggle('active', state.f07Direction === 'left');
-                    arrowRightEl.classList.toggle('active', state.f07Direction === 'right');
+                    arrowLeftEl.classList.toggle('active', state.f08Direction === 'left');
+                    arrowRightEl.classList.toggle('active', state.f08Direction === 'right');
                 } else {
                     // Shuttle count display
-                    timerDisplayEl.textContent = state.f07ShuttleCount;
+                    timerDisplayEl.textContent = state.f08ShuttleCount;
 
                     // Current direction arrow
-                    arrowLeftEl.classList.toggle('active', !state.f07GoingRight);
-                    arrowRightEl.classList.toggle('active', state.f07GoingRight);
+                    arrowLeftEl.classList.toggle('active', !state.f08GoingRight);
+                    arrowRightEl.classList.toggle('active', state.f08GoingRight);
                 }
 
                 // Middle row: | and dots visualization
                 // Using labelLeft/Right and dots for | . . . . . . . | (7 dots)
-                const dotCount = state.f07DotCount;
+                const dotCount = state.f08DotCount;
                 // For going right: dots from left to right
                 // For going left: dots from right to left
-                if (state.f07GoingRight || state.f07CountdownPhase) {
+                if (state.f08GoingRight || state.f08CountdownPhase) {
                     // Left bar visible if dotCount > 0
                     labelLeftEl.textContent = dotCount > 0 ? '|' : '';
                     labelLeftEl.classList.toggle('active', dotCount > 0);
@@ -633,27 +661,27 @@
 
                 // Bottom row: Level | Shuttle time | Score (male-female)
                 // Level: L!1 (orange L, orange !, white number)
-                let levelStr = String(state.f07Level);
-                if (state.f07Level < 10) levelStr = '!' + levelStr;
+                let levelStr = String(state.f08Level);
+                if (state.f08Level < 10) levelStr = '!' + levelStr;
 
-                const shuttleTimeInt = Math.floor(state.f07ShuttleTime);
-                const shuttleTimeFrac = Math.round((state.f07ShuttleTime - shuttleTimeInt) * 10);
-                const maleScore = state.f07ScoreMale === 11 ? 'A' : state.f07ScoreMale;
-                const femaleScore = state.f07ScoreFemale === 11 ? 'A' : state.f07ScoreFemale;
+                const shuttleTimeInt = Math.floor(state.f08ShuttleTime);
+                const shuttleTimeFrac = Math.round((state.f08ShuttleTime - shuttleTimeInt) * 10);
+                const maleScore = state.f08ScoreMale === 11 ? 'A' : state.f08ScoreMale;
+                const femaleScore = state.f08ScoreFemale === 11 ? 'A' : state.f08ScoreFemale;
 
-                scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:${state.f07Level < 10 ? 'orange' : 'orange'}">${levelStr.replace('!', '!')}</span>`;
-                if (state.f07Level < 10) {
-                    scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:orange">!</span><span style="color:orange">${state.f07Level}</span>`;
+                scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:${state.f08Level < 10 ? 'orange' : 'orange'}">${levelStr.replace('!', '!')}</span>`;
+                if (state.f08Level < 10) {
+                    scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:orange">!</span><span style="color:orange">${state.f08Level}</span>`;
                 } else {
-                    scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:orange">${state.f07Level}</span>`;
+                    scoreHomeEl.innerHTML = `<span style="color:orange">L</span><span style="color:orange">${state.f08Level}</span>`;
                 }
 
-                if (state.f07CountdownPhase) {
+                if (state.f08CountdownPhase) {
                     // Hide countdown during pre-countdown phase as requested
                     shotClockEl.innerHTML = '';
                 } else {
                     // Show shuttle countdown in red during competition
-                    const displayTime = state.f07CurrentTime !== undefined ? state.f07CurrentTime : state.f07ShuttleTime;
+                    const displayTime = state.f08CurrentTime !== undefined ? state.f08CurrentTime : state.f08ShuttleTime;
                     const cInt = Math.floor(displayTime);
                     const cFrac = Math.floor((displayTime - cInt + 0.0001) * 10);
                     shotClockEl.innerHTML = `<span style="color:#d00">${cInt}.${cFrac}</span>`;
