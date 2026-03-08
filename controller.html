@@ -931,7 +931,7 @@
         let currentShuttleSource = null;
         let currentBuzzerSource = null;
 
-        function playShuttleNote(note) {
+        function playShuttleNote(note, durationMs) {
             if (!shuttleBuffers[note]) {
                 console.error(`Shuttle note ${note} not loaded`);
                 return;
@@ -952,6 +952,17 @@
             source.connect(audioContext.destination);
             source.start(0);
             currentShuttleSource = source;
+
+            if (durationMs) {
+                setTimeout(() => {
+                    if (currentShuttleSource === source) {
+                        try {
+                            source.stop();
+                        } catch (e) { }
+                        currentShuttleSource = null;
+                    }
+                }, durationMs);
+            }
 
             // Clear reference when sound ends
             source.onended = () => {
@@ -3141,11 +3152,13 @@
                 state.f07RepeatCount = (state.f07RepeatCount + 1) % 10000;
                 state.f07CurrentBeat = 1;
             }
+            // Half beat duration: 60000 / Tempo / 2 = 30000 / Tempo
+            const durationMs = 30000 / state.f07Tempo;
             // Play sound: CH for beat 1, CL for others
             if (state.f07CurrentBeat === 1) {
-                playShuttleNote('CH');
+                playShuttleNote('CH', durationMs);
             } else {
-                playShuttleNote('CL');
+                playShuttleNote('CL', durationMs);
             }
             updateMonitor();
         }
