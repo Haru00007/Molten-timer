@@ -1427,6 +1427,54 @@
             updateMonitor();
         }
 
+        // =====================
+        // Auto-repeat Helper
+        // =====================
+        function addAutoRepeat(buttonId, handler) {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+
+            let timeoutId = null;
+            let intervalId = null;
+            let hasRepeated = false;
+
+            const startRepeat = (e) => {
+                if (e.type === 'mousedown' && e.button !== 0) return; // Only left click
+                e.preventDefault(); // Prevent text selection/double tap zoom on mobile
+
+                // Fire immediately on initial press
+                handler();
+
+                hasRepeated = false;
+                timeoutId = setTimeout(() => {
+                    hasRepeated = true;
+                    intervalId = setInterval(() => {
+                        handler();
+                    }, 100); // 0.1s repeat
+                }, 1000); // 1s hold
+            };
+
+            const stopRepeat = (e) => {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+                hasRepeated = false;
+            };
+
+            btn.addEventListener('mousedown', startRepeat);
+            btn.addEventListener('touchstart', startRepeat, { passive: false });
+
+            btn.addEventListener('mouseup', stopRepeat);
+            btn.addEventListener('mouseleave', stopRepeat);
+            btn.addEventListener('touchend', stopRepeat);
+            btn.addEventListener('touchcancel', stopRepeat);
+        }
+
         // Sub-Timer buttons
         document.getElementById('sub-clear').addEventListener('click', () => {
             state.shotClock = 0;
@@ -1441,13 +1489,13 @@
             updateMonitor();
         });
 
-        document.getElementById('sub-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('sub-plus-1s', () => {
             state.shotClockBlank = false;
             state.shotClock = Math.min(99, state.shotClock + 1);
             updateMonitor();
         });
 
-        document.getElementById('sub-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('sub-minus-1s', () => {
             if (state.shotClock === 0 && state.shotClockTenths === 0) {
                 state.shotClockBlank = true;
             } else {
@@ -1552,39 +1600,39 @@
             updateMonitor();
         });
 
-        document.getElementById('timer-plus-1m').addEventListener('click', () => {
+        addAutoRepeat('timer-plus-1m', () => {
             state.timerMinutes = Math.min(99, state.timerMinutes + 1);
             if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
             updateMonitor();
         });
 
-        document.getElementById('timer-minus-1m').addEventListener('click', () => {
+        addAutoRepeat('timer-minus-1m', () => {
             state.timerMinutes = Math.max(0, state.timerMinutes - 1);
             if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
             updateMonitor();
         });
 
-        document.getElementById('timer-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('timer-plus-1s', () => {
             state.timerSeconds++;
             if (state.timerSeconds >= 60) { state.timerSeconds = 0; state.timerMinutes = Math.min(99, state.timerMinutes + 1); }
             if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
             updateMonitor();
         });
 
-        document.getElementById('timer-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('timer-minus-1s', () => {
             state.timerSeconds--;
             if (state.timerSeconds < 0) { state.timerSeconds = 59; state.timerMinutes = Math.max(0, state.timerMinutes - 1); }
             if (!state.timerCountUp) state.timerPresetSeconds = state.timerMinutes * 60 + state.timerSeconds;
             updateMonitor();
         });
 
-        document.getElementById('timer-plus-tenth').addEventListener('click', () => {
+        addAutoRepeat('timer-plus-tenth', () => {
             state.timerTenths++;
             if (state.timerTenths >= 10) { state.timerTenths = 0; state.timerSeconds++; if (state.timerSeconds >= 60) { state.timerSeconds = 0; state.timerMinutes++; } }
             updateMonitor();
         });
 
-        document.getElementById('timer-minus-tenth').addEventListener('click', () => {
+        addAutoRepeat('timer-minus-tenth', () => {
             state.timerTenths--;
             if (state.timerTenths < 0) { state.timerTenths = 9; state.timerSeconds--; if (state.timerSeconds < 0) { state.timerSeconds = 59; state.timerMinutes--; } }
             updateMonitor();
@@ -1696,7 +1744,7 @@
             updateMonitor();
         });
 
-        document.getElementById('score-left-plus').addEventListener('click', () => {
+        addAutoRepeat('score-left-plus', () => {
             if (state.courtFlipped) {
                 state.scoreGuestBlank = false;
                 state.scoreGuest = Math.min(199, state.scoreGuest + 1);
@@ -1707,7 +1755,7 @@
             updateMonitor();
         });
 
-        document.getElementById('score-right-plus').addEventListener('click', () => {
+        addAutoRepeat('score-right-plus', () => {
             if (state.courtFlipped) {
                 state.scoreHomeBlank = false;
                 state.scoreHome = Math.min(199, state.scoreHome + 1);
@@ -1718,7 +1766,7 @@
             updateMonitor();
         });
 
-        document.getElementById('score-left-minus').addEventListener('click', () => {
+        addAutoRepeat('score-left-minus', () => {
             if (state.courtFlipped) {
                 if (state.scoreGuest === 0) { state.scoreGuestBlank = true; }
                 else { state.scoreGuest = Math.max(0, state.scoreGuest - 1); }
@@ -1729,7 +1777,7 @@
             updateMonitor();
         });
 
-        document.getElementById('score-right-minus').addEventListener('click', () => {
+        addAutoRepeat('score-right-minus', () => {
             if (state.courtFlipped) {
                 if (state.scoreHome === 0) { state.scoreHomeBlank = true; }
                 else { state.scoreHome = Math.max(0, state.scoreHome - 1); }
@@ -1815,14 +1863,14 @@
         }
 
         // Timeout Timer - +1s (shows timer for adjustment)
-        document.getElementById('f02-timeout-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('f02-timeout-plus-1s', () => {
             state.timeoutTimerBlank = false;
             state.timeoutTimer = Math.min(99, state.timeoutTimer + 1);
             updateMonitor();
         });
 
         // Timeout Timer - -1s (shows timer for adjustment)
-        document.getElementById('f02-timeout-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('f02-timeout-minus-1s', () => {
             state.timeoutTimerBlank = false;
             state.timeoutTimer = Math.max(0, state.timeoutTimer - 1);
             updateMonitor();
@@ -1888,7 +1936,7 @@
         });
 
         // F02 Score - L+1
-        document.getElementById('f02-score-left-plus').addEventListener('click', () => {
+        addAutoRepeat('f02-score-left-plus', () => {
             if (state.courtFlipped) {
                 state.scoreGuest = Math.min(99, state.scoreGuest + 1);
             } else {
@@ -1898,7 +1946,7 @@
         });
 
         // F02 Score - R+1
-        document.getElementById('f02-score-right-plus').addEventListener('click', () => {
+        addAutoRepeat('f02-score-right-plus', () => {
             if (state.courtFlipped) {
                 state.scoreHome = Math.min(99, state.scoreHome + 1);
             } else {
@@ -1908,7 +1956,7 @@
         });
 
         // F02 Score - L-1
-        document.getElementById('f02-score-left-minus').addEventListener('click', () => {
+        addAutoRepeat('f02-score-left-minus', () => {
             if (state.courtFlipped) {
                 state.scoreGuest = Math.max(0, state.scoreGuest - 1);
             } else {
@@ -1918,7 +1966,7 @@
         });
 
         // F02 Score - R-1
-        document.getElementById('f02-score-right-minus').addEventListener('click', () => {
+        addAutoRepeat('f02-score-right-minus', () => {
             if (state.courtFlipped) {
                 state.scoreHome = Math.max(0, state.scoreHome - 1);
             } else {
@@ -1935,7 +1983,7 @@
         });
 
         // F02 Game Sets - L+1
-        document.getElementById('f02-sets-left-plus').addEventListener('click', () => {
+        addAutoRepeat('f02-sets-left-plus', () => {
             if (state.courtFlipped) {
                 state.gameSetsRight = Math.min(9, state.gameSetsRight + 1);
             } else {
@@ -1945,7 +1993,7 @@
         });
 
         // F02 Game Sets - R+1
-        document.getElementById('f02-sets-right-plus').addEventListener('click', () => {
+        addAutoRepeat('f02-sets-right-plus', () => {
             if (state.courtFlipped) {
                 state.gameSetsLeft = Math.min(9, state.gameSetsLeft + 1);
             } else {
@@ -1955,7 +2003,7 @@
         });
 
         // F02 Game Sets - L-1
-        document.getElementById('f02-sets-left-minus').addEventListener('click', () => {
+        addAutoRepeat('f02-sets-left-minus', () => {
             if (state.courtFlipped) {
                 state.gameSetsRight = Math.max(0, state.gameSetsRight - 1);
             } else {
@@ -1965,7 +2013,7 @@
         });
 
         // F02 Game Sets - R-1
-        document.getElementById('f02-sets-right-minus').addEventListener('click', () => {
+        addAutoRepeat('f02-sets-right-minus', () => {
             if (state.courtFlipped) {
                 state.gameSetsLeft = Math.max(0, state.gameSetsLeft - 1);
             } else {
@@ -2177,7 +2225,7 @@
         });
 
         // Osae-komi Controls
-        document.getElementById('f03-osaekomi-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('f03-osaekomi-plus-1s', () => {
             if (state.osaekomiSettingMode === 2) {
                 state.osaekomiWazaTime = Math.min(99, state.osaekomiWazaTime + 1);
             } else {
@@ -2188,7 +2236,7 @@
             updateMonitor();
         });
 
-        document.getElementById('f03-osaekomi-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('f03-osaekomi-minus-1s', () => {
             if (state.osaekomiSettingMode === 2) {
                 state.osaekomiWazaTime = Math.max(1, state.osaekomiWazaTime - 1);
             } else {
@@ -2334,7 +2382,7 @@
         }
 
         // F04 Rounds +1
-        document.getElementById('f04-rounds-plus').addEventListener('click', () => {
+        addAutoRepeat('f04-rounds-plus', () => {
             if (state.f04ProgrammingMode && state.f04ProgramStep === 'rounds') {
                 state.f04TotalRounds = Math.min(99, state.f04TotalRounds + 1);
             } else if (!state.f04MatchRunning) {
@@ -2344,7 +2392,7 @@
         });
 
         // F04 Rounds -1
-        document.getElementById('f04-rounds-minus').addEventListener('click', () => {
+        addAutoRepeat('f04-rounds-minus', () => {
             if (state.f04ProgrammingMode && state.f04ProgramStep === 'rounds') {
                 state.f04TotalRounds = Math.max(0, state.f04TotalRounds - 1);
             } else if (!state.f04MatchRunning) {
@@ -2622,7 +2670,7 @@
         }
 
         // F05 Win Count L+1
-        document.getElementById('f05-win-left-plus').addEventListener('click', () => {
+        addAutoRepeat('f05-win-left-plus', () => {
             if (state.f05WinCountLeft === null) {
                 state.f05WinCountLeft = 0;
             } else if (state.f05WinCountLeft >= 9) {
@@ -2634,7 +2682,7 @@
         });
 
         // F05 Win Count R+1
-        document.getElementById('f05-win-right-plus').addEventListener('click', () => {
+        addAutoRepeat('f05-win-right-plus', () => {
             if (state.f05WinCountRight === null) {
                 state.f05WinCountRight = 0;
             } else if (state.f05WinCountRight >= 9) {
@@ -2646,7 +2694,7 @@
         });
 
         // F05 Win Count L-1
-        document.getElementById('f05-win-left-minus').addEventListener('click', () => {
+        addAutoRepeat('f05-win-left-minus', () => {
             if (state.f05WinCountLeft === null) {
                 state.f05WinCountLeft = 9;
             } else if (state.f05WinCountLeft <= 0) {
@@ -2658,7 +2706,7 @@
         });
 
         // F05 Win Count R-1
-        document.getElementById('f05-win-right-minus').addEventListener('click', () => {
+        addAutoRepeat('f05-win-right-minus', () => {
             if (state.f05WinCountRight === null) {
                 state.f05WinCountRight = 9;
             } else if (state.f05WinCountRight <= 0) {
@@ -2670,7 +2718,7 @@
         });
 
         // F05 Wound Timer +1s (for programming mode)
-        document.getElementById('f05-wound-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('f05-wound-plus-1s', () => {
             if (state.f05ProgrammingStep === 'wound') {
                 state.f05WoundTimerPreset = Math.min(999, state.f05WoundTimerPreset + 1);
             } else if (state.f05ProgrammingStep === 'bell') {
@@ -2680,7 +2728,7 @@
         });
 
         // F05 Wound Timer -1s (for programming mode)
-        document.getElementById('f05-wound-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('f05-wound-minus-1s', () => {
             if (state.f05ProgrammingStep === 'wound') {
                 state.f05WoundTimerPreset = Math.max(1, state.f05WoundTimerPreset - 1);
             } else if (state.f05ProgrammingStep === 'bell') {
@@ -2997,13 +3045,13 @@
         }
 
         // F06 Repeat +1
-        document.getElementById('f06-repeat-plus').addEventListener('click', () => {
+        addAutoRepeat('f06-repeat-plus', () => {
             state.f06RepeatCount = Math.min(99, state.f06RepeatCount + 1);
             updateMonitor();
         });
 
         // F06 Repeat -1
-        document.getElementById('f06-repeat-minus').addEventListener('click', () => {
+        addAutoRepeat('f06-repeat-minus', () => {
             state.f06RepeatCount = Math.max(0, state.f06RepeatCount - 1);
             updateMonitor();
         });
@@ -3024,7 +3072,7 @@
         });
 
         // F06 Timer +1m
-        document.getElementById('f06-timer-plus-1m').addEventListener('click', () => {
+        addAutoRepeat('f06-timer-plus-1m', () => {
             if (!state.f06ProgrammingMode && state.f06Programs.length === 0) {
                 state.f06ProgrammingMode = true;
                 state.f06DisplayProgram = 1;
@@ -3034,13 +3082,13 @@
         });
 
         // F06 Timer -1m
-        document.getElementById('f06-timer-minus-1m').addEventListener('click', () => {
+        addAutoRepeat('f06-timer-minus-1m', () => {
             state.timerMinutes = Math.max(0, state.timerMinutes - 1);
             updateMonitor();
         });
 
         // F06 Timer +1s
-        document.getElementById('f06-timer-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('f06-timer-plus-1s', () => {
             if (!state.f06ProgrammingMode && state.f06Programs.length === 0) {
                 state.f06ProgrammingMode = true;
                 state.f06DisplayProgram = 1;
@@ -3054,7 +3102,7 @@
         });
 
         // F06 Timer -1s
-        document.getElementById('f06-timer-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('f06-timer-minus-1s', () => {
             state.timerSeconds--;
             if (state.timerSeconds < 0) {
                 state.timerSeconds = 59;
@@ -3152,8 +3200,8 @@
                 state.f07RepeatCount = (state.f07RepeatCount + 1) % 10000;
                 state.f07CurrentBeat = 1;
             }
-            // Half beat duration: 60000 / Tempo / 2 = 30000 / Tempo
-            const durationMs = 30000 / state.f07Tempo;
+            // Beat duration: 60000 / Tempo
+            const durationMs = 60000 / state.f07Tempo;
             // Play sound: CH for beat 1, CL for others
             if (state.f07CurrentBeat === 1) {
                 playShuttleNote('CH', durationMs);
@@ -3164,7 +3212,7 @@
         }
 
         // F07 Tempo +1
-        document.getElementById('f07-tempo-plus').addEventListener('click', () => {
+        addAutoRepeat('f07-tempo-plus', () => {
             if (!state.f07Running) {
                 state.f07Tempo = Math.min(255, state.f07Tempo + 1);
             }
@@ -3172,7 +3220,7 @@
         });
 
         // F07 Tempo -1
-        document.getElementById('f07-tempo-minus').addEventListener('click', () => {
+        addAutoRepeat('f07-tempo-minus', () => {
             if (!state.f07Running) {
                 state.f07Tempo = Math.max(1, state.f07Tempo - 1);
             }
@@ -3180,7 +3228,7 @@
         });
 
         // F07 Beats +1
-        document.getElementById('f07-beats-plus').addEventListener('click', () => {
+        addAutoRepeat('f07-beats-plus', () => {
             if (!state.f07Running) {
                 state.f07Beats = Math.min(9, state.f07Beats + 1);
             }
@@ -3188,7 +3236,7 @@
         });
 
         // F07 Beats -1
-        document.getElementById('f07-beats-minus').addEventListener('click', () => {
+        addAutoRepeat('f07-beats-minus', () => {
             if (!state.f07Running) {
                 state.f07Beats = Math.max(1, state.f07Beats - 1);
             }
@@ -3306,9 +3354,9 @@
         ];
 
         // Note sequence for going right: C->D->E->F->G->A->B->CH->CL (turnaround)
-        // Note sequence for going left: CH->B->A->G->F->E->D->C->CL (turnaround)
+        // Note sequence for going left: C->D->E->F->G->A->B->CH->CL (turnaround)
         const f08NotesRight = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
-        const f08NotesLeft = ['CH', 'B', 'A', 'G', 'F', 'E', 'D', 'C', 'CL'];
+        const f08NotesLeft = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
 
 
 
@@ -3371,7 +3419,7 @@
                     f08NoteIntervalMs = (state.f08ShuttleTime * 1000) / 9;
                 } else {
                     // Normal turnaround
-                    playShuttleNote('CL');
+                    playShuttleNote('CL', f08NoteIntervalMs);
                 }
                 // Switch direction
                 state.f08GoingRight = !state.f08GoingRight;
@@ -3389,7 +3437,7 @@
             } else {
                 // Normal note playing (Pos 0 to 7)
                 const note = notes[state.f08NotePosition];
-                playShuttleNote(note);
+                playShuttleNote(note, f08NoteIntervalMs);
 
                 state.f08DotCount = state.f08NotePosition + 1; // 0->1, 7->8
                 state.f08NotePosition++;
@@ -3463,7 +3511,7 @@
         }
 
         // F08 +1m
-        document.getElementById('f08-plus-1m').addEventListener('click', () => {
+        addAutoRepeat('f08-plus-1m', () => {
             if (state.f08CountdownPhase && !state.f08Running) {
                 state.f08Countdown = Math.min(600, state.f08Countdown + 60);
             }
@@ -3471,7 +3519,7 @@
         });
 
         // F08 -1m
-        document.getElementById('f08-minus-1m').addEventListener('click', () => {
+        addAutoRepeat('f08-minus-1m', () => {
             if (state.f08CountdownPhase && !state.f08Running) {
                 state.f08Countdown = Math.max(0, state.f08Countdown - 60);
             }
@@ -3479,7 +3527,7 @@
         });
 
         // F08 +1s
-        document.getElementById('f08-plus-1s').addEventListener('click', () => {
+        addAutoRepeat('f08-plus-1s', () => {
             if (state.f08CountdownPhase && !state.f08Running) {
                 state.f08Countdown = Math.min(600, state.f08Countdown + 1);
             }
@@ -3487,7 +3535,7 @@
         });
 
         // F08 -1s
-        document.getElementById('f08-minus-1s').addEventListener('click', () => {
+        addAutoRepeat('f08-minus-1s', () => {
             if (state.f08CountdownPhase && !state.f08Running) {
                 state.f08Countdown = Math.max(0, state.f08Countdown - 1);
             }
