@@ -3354,9 +3354,9 @@
         ];
 
         // Note sequence for going right: C->D->E->F->G->A->B->CH->CL (turnaround)
-        // Note sequence for going left: C->D->E->F->G->A->B->CH->CL (turnaround)
+        // Note sequence for going left: CH->B->A->G->F->E->D->C->CL (turnaround)
         const f08NotesRight = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
-        const f08NotesLeft = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'CH', 'CL'];
+        const f08NotesLeft = ['CH', 'B', 'A', 'G', 'F', 'E', 'D', 'C', 'CL'];
 
 
 
@@ -3397,7 +3397,7 @@
         }
 
         function f08PlayNextNote() {
-            const notes = state.f08GoingRight ? f08NotesRight : f08NotesLeft;
+            const notes = (state.f08ShuttleCount % 2 === 0) ? f08NotesRight : f08NotesLeft;
 
             // Logic for 9 intervals (BPM compliant):
             // Pos 0-7: Notes C-CH (Dots 1-8)
@@ -3454,58 +3454,51 @@
         }
 
         function f08CountdownTick() {
+            if (state.f08CountdownTenths === 0) {
+                // If we hit exactly X.0 seconds, play beep
+                if (state.f08Countdown > 0 && state.f08Countdown <= 5) {
+                    playBuzzer();
+                }
+            }
+
             state.f08CountdownTenths--;
             if (state.f08CountdownTenths < 0) {
                 state.f08CountdownTenths = 9;
                 state.f08Countdown--;
 
-                // Beep every second in last 5 seconds (5, 4, 3, 2, 1)
-                // 5 -> Beep
-                // 1 -> Beep
-                // 0 -> Start
-                if (state.f08Countdown > 0 && state.f08Countdown <= 5) {
-                    playBuzzer();
+                if (state.f08Countdown === 0 && state.f08CountdownTenths === 9) {
+                    // Start immediately when transitioning from 1.0 to 0.9 (which is effectively 0)
+                    // Wait, actually we want to start at exactly 0.0
                 }
+            }
 
-                if (state.f08Countdown < 0) {
-                    // Countdown finished (at -1s mark essentially, after 0)
-                    // Or should start at 0?
-                    // Usually: 5 (beep), 4 (beep), 3 (beep), 2 (beep), 1 (beep), 0 (GO/Buzzer).
-                    // My logic: Countdown-- happens. 
-                    // If countdown was 1. Becomes 0.
-                    // Next tick: 0 -> -1.
-                    // So at 0, we should play GO buzzer?
-                    // Currently at >0 && <=5 plays beep. 
-                    // When it becomes 0, it doesn't play explicitly here?
-                    // Wait, if Countdown becomes 0.
-                    // Next tick (1s later), it becomes -1. Enter `if (state.f08Countdown < 0)`.
-                    // Plays `playBuzzer()` (Start buzzer). Correct.
+            // Real fix: the display shows 5.0, then 4.9.
+            // When it reaches 0.0, it should start.
+            if (state.f08Countdown === 0 && state.f08CountdownTenths === 0) {
+                // Countdown reached 0.0. Play the start buzzer/note immediately.
+                clearInterval(f08CountdownInterval);
+                f08CountdownInterval = null;
+                state.f08CountdownPhase = false;
+                state.f08Countdown = 0;
+                state.f08CountdownTenths = 0;
 
-                    clearInterval(f08CountdownInterval);
-                    f08CountdownInterval = null;
-                    state.f08CountdownPhase = false;
-                    state.f08Countdown = 0;
+                // Start Setup
+                state.f08GoingRight = state.f08Direction === 'right';
+                state.f08NotePosition = 0;
+                state.f08DotCount = 1;
+                state.f08ShuttleCount = 0;
+                state.f08LevelShuttleCount = 0;
+                state.f08Level = 1;
+                const levelInfo = f08GetLevelInfo(1);
+                state.f08ShuttleTime = levelInfo.timeLimit;
+                state.f08CurrentTime = levelInfo.timeLimit;
+                f08NoteIntervalMs = (state.f08ShuttleTime * 1000) / 9;
 
-                    // Start Setup
-                    state.f08GoingRight = state.f08Direction === 'right';
-                    state.f08NotePosition = 0;
-                    state.f08DotCount = 1; // Start with 1st dot active?
-                    state.f08ShuttleCount = 0; // Starts at 0? Or 1? Usually "Start" is 0 distance.
-                    state.f08LevelShuttleCount = 0;
-                    state.f08Level = 1;
-                    const levelInfo = f08GetLevelInfo(1);
-                    state.f08ShuttleTime = levelInfo.timeLimit;
-                    state.f08CurrentTime = levelInfo.timeLimit;
-                    f08NoteIntervalMs = (state.f08ShuttleTime * 1000) / 9;
+                // Play Start Note (C) immediately
+                f08PlayNextNote();
 
-                    // Play Start Note (C) immediately
-                    // The loop `f08PlayNextNote` plays note THEN schedules next.
-                    // So calling it now plays 1st note (C).
-                    f08PlayNextNote();
-
-                    // Start run timer
-                    f08RunTimerInterval = setInterval(f08RunTimerTick, 100);
-                }
+                // Start run timer
+                f08RunTimerInterval = setInterval(f08RunTimerTick, 100);
             }
             updateMonitor();
         }
